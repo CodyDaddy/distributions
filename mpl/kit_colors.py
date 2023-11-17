@@ -1,11 +1,10 @@
 """
 Python database for KIT - colors
-By Marvin W. & Frank R.
+By Marvin Winkler & Frank Rhein
 =====
 """
-import matplotlib.colors as mc
 
-# %% Define KIT colors
+# Define KIT colors
 transparent = (1.0, 1.0, 1.0, 0.0)
 white = (1.0, 1.0, 1.0)
 
@@ -164,6 +163,7 @@ cyan5 = (0.9569, 0.9816, 0.9939)
 def gray(intensity: float) -> tuple:
     """
     Creates an RGB faded tuple for any gray scale
+
     Parameters
     ----------
     intensity: float
@@ -179,6 +179,7 @@ def gray(intensity: float) -> tuple:
 def hex_to_faded(hex_color: str, intensity: float = 1.) -> tuple:
     """
     Creates an RGB faded tuple to reduce color intensity
+
     Parameters
     ----------
     hex_color: str

@@ -3,6 +3,20 @@ from scipy.optimize import curve_fit
 
 
 def get_eta_herschel_bulkley(gamma, tau_0: float, k: float, n: float):
+    """
+    
+    
+    Parameters
+    ----------
+    gamma
+    tau_0
+    k
+    n
+
+    Returns
+    -------
+
+    """
     return tau_0 / gamma + k * np.power(gamma, n - 1)
 
 

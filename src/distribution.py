@@ -8,14 +8,14 @@ import warnings
 import copy
 import scipy.interpolate as interpol
 
-
 # import custom packages
 from src import io_node, algorithms as alg
 from src import my_exceptions as exc
 from scipy.stats import lognorm
 
 modes = [0, 1]  # 0=density distribution, 1=cumulative distribution
-x_types = ['#', 'x', 'A', 'V']  # number, length, surface, volume
+x_types = ['n', 'x', 'A', 'V']  # number, length, surface, volume
+x_units = ['#', 'm', r'$m^{2}$', r'$m^{3}$']
 DistributionNames = ['q', 'Q']
 x_names = ['', '_max']
 
@@ -189,23 +189,23 @@ class Distribution:
             warnings.warn('[WARNING] Initial distribution with normalized values assumed!')
 
     def __str__(self, mode=0):
-        return f'Distribution {DistributionNames[0]}' + r'$_{' + f'{self.base}' + r'}$(' + f'{x_types[self.x_type]})' \
+        return f'Distribution {DistributionNames[mode]}' + r'$_{' + f'{self.base}' + r'}$(' + f'{x_types[self.x_type]})' \
             + f' with x_max: {np.power((self.x_max[1], self.x_max[-1]), float(1 / self.x_type))} µm on {len(self.x)} nodes'
 
     def __sub__(self, other):
-        if self.AreCompatible(other):
+        if self.is_compatible(other):
             return Distribution(self.x, self.y - other.y, base=self.base, x_type=self.x_type, time=self.time)
         else:
             raise exc.IncompatibleDistributions(self, other)
 
     def __mul__(self, other):
-        if self.AreCompatible(other):
+        if self.is_compatible(other):
             return Distribution(self.x, self.y * other.y, base=self.base, x_type=self.x_type, time=self.time)
         else:
             raise exc.IncompatibleDistributions(self, other)
 
     def __truediv__(self, other):
-        if self.AreCompatible(other):
+        if self.is_compatible(other):
             newy = 1 * self.y
             othery = 1 * other.y
             newy = np.where(othery != 0, np.divide(newy, othery), 0)
@@ -215,7 +215,7 @@ class Distribution:
             raise exc.IncompatibleDistributions(self, other)
 
     def __pow__(self, other):
-        if self.AreCompatible(other):
+        if self.is_compatible(other):
             return Distribution(self.x, self.y ** other.y, base=self.base, x_type=self.x_type, time=self.time)
         else:
             raise exc.IncompatibleDistributions(self, other)
@@ -252,17 +252,20 @@ class Distribution:
                     f'Sum of mass fractions must be < 1! Current sum = {mass_frac.sum()}',
                     kind='error')
                 return self
-        new_pop = (1 - mass_frac.sum()) / self.get_moment(1) * self.get_population()
-        if self.x_type == 3 and self.base == 0:
-            for idx, dist in enumerate(others):
-                if all(dist.x == self.x) and self.base == dist.base:
-                    new_pop += mass_frac[idx] / dist.get_moment(1) * dist.get_population()
 
-            new_pop *= self.get_moment(1)
-        temp_dist = self.copy()
-        temp_dist.y = get_y_i(self.x_max, np.cumsum(new_pop))
+        new_dist = self.change_base_and_x_type(base=3, x_type=1)
+        new_pop = (1 - mass_frac.sum()) / new_dist.get_moment(1) * new_dist.get_population()
+        other_dists = copy.deepcopy(others)
+        for idx, dist in enumerate(other_dists):
+            dist = dist.change_base_and_x_type(base=3, x_type=1)
+            if not self.change_base_and_x_type(base=3, x_type=1).is_compatible(dist):
+                dist = dist.adapt_grid(self.change_base_and_x_type(base=3, x_type=1))
 
-        return temp_dist.change_base(self.base)
+            new_pop += mass_frac[idx] / dist.get_moment(0) * dist.get_population()
+
+        new_dist.y = get_y_i(self.x_max, np.cumsum(new_pop))
+
+        return new_dist.change_base_and_x_type(self.base, x_type=1)
 
     def copy(self):
         return copy.deepcopy(self)
@@ -286,6 +289,7 @@ class Distribution:
     def get_dict(self):
         """
         Returns a dictionary representation of the distribution object
+
         Returns
         -------
         dump_dict : dict
@@ -304,16 +308,15 @@ class Distribution:
 
     def get_max_volume(self):
         """
-        Get volume of x_95
+        Get volume of x_100
+
         Returns
         -------
         x_95 : float
             x_95 value of distribution
         """
         y_max = self.change_base_and_x_type(3, 1).get_y_max()
-        tmp_arr = np.zeros(len(y_max))
-        tmp_arr[y_max <= 0.95] = 1
-        return self.x_max[int(tmp_arr.sum())]
+        return self.x_max[len(y_max[y_max <= 1])]
 
     def get_dx_i(self):
         return get_dx_i(self.x_max)
@@ -321,6 +324,7 @@ class Distribution:
     def get_population(self):
         """
         Get population of each cell
+
         Returns
         -------
         population : numpy.ndarray
@@ -468,7 +472,8 @@ class Distribution:
         return self.change_base(base=base, message=message).change_x_type(x_type=x_type, message=message)
 
     def change_base(self, base: int = 0, message: bool = False):
-        """ Change base of distribution
+        """
+        Change base of distribution
 
         Parameters
         ----------
@@ -510,7 +515,9 @@ class Distribution:
             return new_dist
 
     def change_x_type(self, x_type: int, message: bool = False):
-        """ Change base and x type of distribution
+        """
+        Change x type of distribution
+
         Parameters
         ----------
         x_type : int, optional
@@ -572,6 +579,7 @@ class Distribution:
             kth moment to be calculated. Default is 0th moment (integral of density distribution)
         x_min : float, optional
             Lower limit for moment calculation
+
         Returns
         -------
         moment : float
@@ -589,13 +597,16 @@ class Distribution:
             return np.sum(xkqdx)
 
     def get_DI(self, x_limit: float = np.inf):
-        """
-        Calculate dispersion index as int(q_3(x), x=0..x_limit) / x_50,3(x_limit)
+        r"""
+        Calculate dispersion index as
+
+        .. math:: DI = \frac{\int_0^{x^*}q_3(x)}{x_{50,3}(x^*)}
 
         Parameters
         ----------
         x_limit : float, optional
             Upper limit for DI calculation. Default takes whole distribution
+
         Returns
         -------
         DI : float
@@ -637,6 +648,7 @@ class Distribution:
         ----------
         percentile : float | Iterable
             Desired percentiles to be calculated
+
         Returns
         -------
         x : numpy.ndarray
@@ -653,6 +665,7 @@ class Distribution:
         ----------
         x : float
             Value of distributed quantity
+
         Returns
         -------
         percentile : float
@@ -667,6 +680,7 @@ class Distribution:
     def get_agg_volumes(self):
         """
         Returns a matrix of all possible aggregate volumes of particles in grid
+
         Returns
         -------
         ndarray
@@ -678,6 +692,7 @@ class Distribution:
     def get_agg_A_ijk(self):
         """
         Get all cell combination within limits of new particle cell
+
         Returns
         -------
         A_ijk : numpy.ndarray
@@ -696,7 +711,7 @@ class Distribution:
 
         return agg_A_ijk
 
-    def AreCompatible(self, other):
+    def is_compatible(self, other):
         """
         Checks if other is compatible with Distribution object. Grid, base and x_type are to be equal
 
@@ -709,7 +724,7 @@ class Distribution:
         -------
         bool
         """
-        if self.base == other.base and self.x_type == other.x_type:
+        if self.base == other.base and self.x_type == other.x_type and all(self.x_max == other.x_max):
             return True
         else:
             return False
@@ -729,11 +744,12 @@ class Distribution:
         population : bool, optional
             If mode = 0, then returns population (default = True) or density (False)
         base : int, optional
-            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
+            Base of distribution. 0: number, 1: length, 2: surface, 3: volume
+            default : current base
         x_type : int, optional
-            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)
-        plot_kwargs : dict, optional
-            Plot arguments (see io_node.plot_on_ax)
+            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume
+            x_type : current base
+        plot_kwargs
 
         Returns
         -------
@@ -745,12 +761,12 @@ class Distribution:
             x_type = self.x_type
         fig, ax = plt.subplots()
         self.plot_on_ax(ax=ax, mode=mode, population=population, x_type=x_type, base=base, **plot_kwargs)
-        ax.set_xlabel = f'{x_types[x_type]} / -'
+        ax.set_xlabel(f'{x_types[x_type]} / -')
 
         if population:
-            ax.set_ylabel = r'$f_i(' + x_types[x_type] + '_i)$ / -'
+            ax.set_ylabel(r'$f_i(' + x_types[x_type] + '_i)$ / -')
         else:
-            ax.set_ylabel = r'$f(' + x_types[x_type] + ')$ / -'
+            ax.set_ylabel(r'$f(' + x_types[x_type] + ')$ / -')
         return fig, ax
 
     def plot_on_ax(self, ax, mode: int = 0, population: bool = True,
@@ -772,8 +788,7 @@ class Distribution:
         x_type : int, optional
             Distributed quantity. 0: number, 1: length, 2: surface, 3: volume
             default : object base attribute
-        plot_kwargs : dict, optional
-            Plot arguments (see io_node.plot_on_ax)
+        plot_kwargs
 
         Returns
         -------
@@ -806,6 +821,24 @@ class Distribution:
                                rf'$f_{new_dist.base}({x_types[new_dist.x_type]}, {np.round(new_dist.time, 2)} s)$')
         plot_kwargs.setdefault('x_log', True)
         plot_kwargs.setdefault('y_log', False)
+        plot_kwargs.setdefault('x_label', x_types[new_dist.x_type]
+                               + x_names[mode]
+                               + ' / '
+                               + x_units[new_dist.x_type])
+        plot_kwargs.setdefault('y_label', DistributionNames[mode]
+                                          + r'$_{'
+                                          + f'{self.base}'
+                                          + r'}$('
+                                          + f'{x_types[self.x_type]})'
+                                          + ' / '
+                                          + '-' if mode == 1 or population else DistributionNames[mode]
+                                                                                + r'$_{'
+                                                                                + f'{self.base}'
+                                                                                + r'}$(' + f'{x_types[self.x_type]})'
+                                                                                + ' / '
+                                                                                + r'$\frac{1}{'
+                                                                                + x_units[new_dist.x_type]
+                                                                                + r'}$')
         io_node.plot_on_ax(x_plot=x_plot, y_plot=y_plot, ax=ax, **plot_kwargs)
         if plot_kwargs['x_log']:
             ax.set_xscale('log')
@@ -813,6 +846,18 @@ class Distribution:
             ax.set_yscale('log')
 
     def to_csv(self, path: str):
+        """
+        Writes distribution to csv file
+
+        Parameters
+        ----------
+        path : str
+            path to csv-file
+
+        Returns
+        -------
+        None
+        """
         if not path.endswith('.csv'):
             if not path.endswith('/'):
                 path += '/'
@@ -825,7 +870,7 @@ class Distribution:
         df.to_csv(path_or_buf=path, sep=';', header=True, index=False)
 
 
-def get_distribution(kind: str = 'custom', **kwargs):
+def get_distribution(kind: str = 'custom', **kwargs) -> Distribution:
     """
     returns an analytical distribution
 
@@ -838,7 +883,7 @@ def get_distribution(kind: str = 'custom', **kwargs):
 
     Returns
     -------
-
+    Distribution
     """
     if kind == 'mono':
         return mono(**kwargs)
@@ -851,8 +896,13 @@ def get_distribution(kind: str = 'custom', **kwargs):
     elif kind == 'log-normal':
         return log_normal(**kwargs)
     else:
-        if 'x_max' in kwargs.keys():
+        if 'x_max' in kwargs and ('y_i' in kwargs or 'y_max' in kwargs):
             return Distribution(**kwargs)
+        else:
+            all_keys = ''
+            for i in kwargs:
+                all_keys += ', ' + str(i)
+            exc.WrongValue(expected='x_max and y_i or y_max', received=all_keys)
 
 
 def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = None,
@@ -860,11 +910,11 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
                dist_adapt_to: Distribution | None = None,
                string_key: bool = False, in_dict: bool = True,
                number_based: bool = True,
-               **rest_args):
+               **rest_args) -> Distribution:
     """
     Imports data from a CSV or XLSX file and returns is as a Distribution object
 
-        Parameters
+    Parameters
     ----------
 
     path : str
@@ -894,7 +944,7 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
 
     Returns
     -------
-
+    Distribution
     """
     if path is not None:
         dist_dict = {}
@@ -956,7 +1006,7 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
         io_node.log_and_print(f"path_in can't be None", kind='error')
 
 
-def mix(*dists, mass_frac: numpy.ndarray | None = None):
+def mix(*dists, mass_frac: numpy.ndarray | None = None) -> Distribution:
     """
     mix distributions according to mass fractions
 
@@ -974,26 +1024,33 @@ def mix(*dists, mass_frac: numpy.ndarray | None = None):
     """
     return dists[0].mix(*dists[1:], mass_frac=mass_frac[1:])
 
+
 def mono(nodes: int = 30,
          x_lim: numpy.ndarray = None,
          peak_at: float = 1.,
          base: int = 0,
          x_type: int = 3,
-         **rest_args):
+         **rest_args) -> Distribution:
     """
+    Returns mono distribution
 
     Parameters
     ----------
-    nodes
-    x_lim
-    peak_at
-    base
-    x_type
+    nodes : int
+        Nober of grid nodes
+    x_lim : list[float]
+        Min and max for x
+    peak_at : float
+        x value of the distribution peak
+    base : int, optional
+            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
+    x_type : int, optional
+        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)
     rest_args
 
     Returns
     -------
-
+    Distribution
     """
     # param_set distribution to mono at x=peak
     x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
@@ -1013,7 +1070,30 @@ def dec_exponential(nodes=30,
                     v_0=1,
                     base: int = 0,
                     x_type: int = 3,
-                    **rest_args):
+                    **rest_args) -> Distribution:
+    """
+    Returns decreasing exponential distribution (right side of gauss)
+
+    Parameters
+    ----------
+    nodes : int
+        Nober of grid nodes
+    x_lim : list[float]
+        Min and max for x
+    N_0 : float
+        intergral of distribution
+    v_0 : float
+        average x
+    base : int, optional
+            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
+    x_type : int, optional
+        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)
+    rest_args
+
+    Returns
+    -------
+    Distribution
+    """
     # param_set distribution to mono at x=peak
     x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
     x_max = alg.set_x_0(x_max)
@@ -1027,7 +1107,30 @@ def inc_exponential(nodes=30,
                     v_0: float = 1,
                     base: int = 0,
                     x_type: int = 3,
-                    **rest_args):
+                    **rest_args) -> Distribution:
+    """
+    Returns increasing exponential distribution (left side of gauss)
+
+    Parameters
+    ----------
+    nodes : int
+        Nober of grid nodes
+    x_lim : list[float]
+        Min and max for x
+    N_0 : float
+        intergral of distribution
+    v_0 : float
+        average x
+    base : int, optional
+            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
+    x_type : int, optional
+        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)
+    rest_args
+
+    Returns
+    -------
+    Distribution
+    """
     # param_set distribution to mono at x=peak
     x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
     x_max = alg.set_x_0(x_max)
@@ -1042,8 +1145,9 @@ def gauss(nodes: int = 30,
           sigma: float = np.sqrt(np.log(4 / 3)),
           base: int = 0,
           x_type: int = 3,
-          **rest_args):
+          **rest_args) -> Distribution:
     """
+    Returns gauss normal distribution
 
     Parameters
     ----------
@@ -1067,13 +1171,13 @@ def gauss(nodes: int = 30,
 
     Returns
     -------
-
+    Distribution
     """
     if x_lim is None:
         x_lim = [0, 2]
     # param_set distribution to gauss
     x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, **rest_args)
-    x_max= alg.set_x_0(x_max)
+    x_max = alg.set_x_0(x_max)
     n = lambda v: N_0 / (np.sqrt(2 * np.pi) * v * sigma) * np.exp(-np.power(np.log(v / mu), 2) / (2 * sigma ** 2))
     return Distribution(x_max=x_max, y=np.append([0], n(get_x_i(x_max)[1:])), base=base, x_type=x_type)
 
@@ -1086,7 +1190,7 @@ def log_normal(x_lim: list[float],
                sigma: float = np.sqrt(np.log(4 / 3)),
                base: int = 0,
                x_type: int = 3,
-               **dist_kwargs):
+               **dist_kwargs) -> Distribution:
     """
     lognormal distribution as Distribution Object
 
@@ -1118,7 +1222,7 @@ def log_normal(x_lim: list[float],
 
     Returns
     -------
-
+    Distribution
     """
     # get grid border points
     x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=grid, grid_base=log_base)

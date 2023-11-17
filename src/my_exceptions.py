@@ -15,9 +15,8 @@ class MissingValues(Exception):
             optionalText = '{} \n {}'.format(x, y)
         else:
             optionalText = ''
-            super().__init__('[ERROR] missing values detected!\n '
-                             'xi and yi need to have the same size\n'
-                             'but received: x = {} and y = {} {}\n'.format(len(x), len(y), optionalText))
+        super().__init__('[ERROR] missing values detected!\n '
+                         'x_max and yi or y_max of the same size required!')
 
 
 class IncompatibleDistributions(Exception):

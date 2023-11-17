@@ -2,7 +2,7 @@ import matplotlib.pyplot
 import numpy
 import numpy as np
 import pandas
-import pandas as pd
+from importlib import reload
 from collections.abc import Callable
 import json
 from numpyencoder import NumpyEncoder
@@ -263,7 +263,7 @@ def plot_on_ax(x_plot: numpy.ndarray,
         ax.set_xlabel(x_label)
 
     if y_label is not None:
-        ax.set_xlabel(y_label)
+        ax.set_ylabel(y_label)
 
 
 def plot_df_fade_on_ax(ax: matplotlib.pyplot.Axes,
