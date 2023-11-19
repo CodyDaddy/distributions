@@ -1,8 +1,7 @@
 from collections.abc import Iterable
 
 import numpy
-import numpy as np
-import pandas as pd
+import pandas
 import matplotlib.pyplot as plt
 import warnings
 import copy
@@ -34,7 +33,7 @@ def get_x_i(x_max: numpy.ndarray) -> numpy.array:
     xi : numpy.ndarray
         Cell average of grid
     """
-    return np.append(x_max[0] / 2, (x_max[:-1] + x_max[1:]) / 2)
+    return numpy.append(x_max[0] / 2, (x_max[:-1] + x_max[1:]) / 2)
 
 
 def get_dx_i(x_max: numpy.ndarray) -> numpy.array:
@@ -51,7 +50,7 @@ def get_dx_i(x_max: numpy.ndarray) -> numpy.array:
     dx : numpy.ndarray
         Array with size of cells
     """
-    return np.append([0], np.diff(x_max, axis=0))
+    return numpy.append([0], numpy.diff(x_max, axis=0))
 
 
 def get_y_i(x_max: numpy.ndarray, y_max: numpy.ndarray) -> numpy.array:
@@ -70,7 +69,7 @@ def get_y_i(x_max: numpy.ndarray, y_max: numpy.ndarray) -> numpy.array:
     y_i : numpy.ndarray
         Array of density values
     """
-    return np.append([0], np.where(np.diff(y_max) >= 0, np.diff(y_max) / np.diff(x_max), 0))
+    return numpy.append([0], numpy.where(numpy.diff(y_max) >= 0, numpy.diff(y_max) / numpy.diff(x_max), 0))
 
 
 def get_dy_i(y_max: numpy.array) -> numpy.array:
@@ -87,7 +86,7 @@ def get_dy_i(y_max: numpy.array) -> numpy.array:
     dy : numpy.ndarray
         Population array
     """
-    return np.append(y_max[0], np.diff(y_max, axis=0))
+    return numpy.append(y_max[0], numpy.diff(y_max, axis=0))
 
 
 def get_x_max(x):
@@ -104,7 +103,7 @@ def get_x_max(x):
     x_max : numpy.ndarray
         Grid array
     """
-    x_max = np.zeros(len(x))
+    x_max = numpy.zeros(len(x))
     for i in range(1, len(x_max)):
         x_max[i] = 2 * x[i] - x_max[i - 1]
 
@@ -147,16 +146,16 @@ class Distribution:
             Dump for other keyword arguments
         """
         # set grid
-        x_max = x_max if isinstance(x_max, np.ndarray) and not None else np.array(x_max)
+        x_max = x_max if isinstance(x_max, numpy.ndarray) and not None else numpy.array(x_max)
 
         if y_max is not None:  # set distribution density if cumulative values are present
-            y_max = y_max if isinstance(y_max, np.ndarray) else np.array(y_max)
+            y_max = y_max if isinstance(y_max, numpy.ndarray) else numpy.array(y_max)
             self.x_max, y_max = alg.set_x_0(x_max, y_max)
             self.x = get_x_i(self.x_max)
             self.y = get_y_i(self.x_max, y_max)
         elif y is not None:  # set distribution density
-            y = y if isinstance(y, np.ndarray) else np.array(y)
-            y_max = np.cumsum(np.multiply(y, get_dx_i(x_max)))
+            y = y if isinstance(y, numpy.ndarray) else numpy.array(y)
+            y_max = numpy.cumsum(numpy.multiply(y, get_dx_i(x_max)))
             # correct discretization error
             y_max /= y_max[-1]
             self.x_max, y_max = alg.set_x_0(x_max, y_max)
@@ -190,7 +189,7 @@ class Distribution:
 
     def __str__(self, mode=0):
         return f'Distribution {DistributionNames[mode]}' + r'$_{' + f'{self.base}' + r'}$(' + f'{x_types[self.x_type]})' \
-            + f' with x_max: {np.power((self.x_max[1], self.x_max[-1]), float(1 / self.x_type))} µm on {len(self.x)} nodes'
+            + f' with x_max: {numpy.power((self.x_max[1], self.x_max[-1]), float(1 / self.x_type))} µm on {len(self.x)} nodes'
 
     def __sub__(self, other):
         if self.is_compatible(other):
@@ -208,8 +207,8 @@ class Distribution:
         if self.is_compatible(other):
             newy = 1 * self.y
             othery = 1 * other.y
-            newy = np.where(othery != 0, np.divide(newy, othery), 0)
-            newy = np.nan_to_num(newy, posinf=0)
+            newy = numpy.where(othery != 0, numpy.divide(newy, othery), 0)
+            newy = numpy.nan_to_num(newy, posinf=0)
             return Distribution(self.x, newy, base=self.base, x_type=self.x_type, time=self.time)
         else:
             raise exc.IncompatibleDistributions(self, other)
@@ -241,7 +240,7 @@ class Distribution:
             mass_frac = 1 / (len(others) + 1)
         else:
             if isinstance(mass_frac, list):
-                mass_frac = np.array(mass_frac)
+                mass_frac = numpy.array(mass_frac)
             if len(mass_frac) != len(others):
                 io_node.log_and_print(
                     f'Wrong size of mass fractions. Expected {len(others)} but received {len(mass_frac)}',
@@ -263,7 +262,7 @@ class Distribution:
 
             new_pop += mass_frac[idx] / dist.get_moment(0) * dist.get_population()
 
-        new_dist.y = get_y_i(self.x_max, np.cumsum(new_pop))
+        new_dist.y = get_y_i(self.x_max, numpy.cumsum(new_pop))
 
         return new_dist.change_base_and_x_type(self.base, x_type=1)
 
@@ -349,7 +348,7 @@ class Distribution:
             io_node.log_and_print(f'Calculating Q{self.base}({self.x_type})')
 
         dy = self.get_population()
-        return np.cumsum(dy)
+        return numpy.cumsum(dy)
 
     def adapt_grid(self, other):
         """
@@ -403,7 +402,7 @@ class Distribution:
         if message:
             io_node.log_and_print('Discretizing distribution over {} nodes.'.format(nodes))
         new_dist = self.copy()
-        limits = np.zeros(2)
+        limits = numpy.zeros(2)
         if x_max is None:
             # keep number of nodes but create a new grid within current x limits
             if self.x_max[0] > 0:
@@ -422,15 +421,15 @@ class Distribution:
 
         # interpolate values onto new grid
         if log_fit:
-            f = interpol.interp1d(np.log10(self.x_max), self.get_y_max(),
+            f = interpol.interp1d(numpy.log10(self.x_max), self.get_y_max(),
                                   kind='linear', assume_sorted=True)
-            y_max = f(np.log10(x_max[1:-1]))
+            y_max = f(numpy.log10(x_max[1:-1]))
         else:
             f = interpol.interp1d(self.x_max, self.get_y_max(),
                                   kind='linear', assume_sorted=True,
                                   fill_value=(0, 1), bounds_error=False)
             y_max = f(x_max[1:-1])
-        y_max = np.append(np.append([0], y_max), [1])
+        y_max = numpy.append(numpy.append([0], y_max), [1])
         new_dist.y = get_y_i(x_max, y_max)
         new_dist.x = get_x_i(x_max)
         new_dist.x_max = x_max.copy()
@@ -438,14 +437,14 @@ class Distribution:
         if debug:
             io_node.log_and_print(f'x = {new_dist.x[1]}')
 
-            dfOld = pd.DataFrame({'x': self.x, 'init': self.y})
-            dfNew = pd.DataFrame({'x': new_dist.x, 'interpol': new_dist.y})
-            dfExport = pd.concat([dfOld, dfNew], axis=1)
+            dfOld = pandas.DataFrame({'x': self.x, 'init': self.y})
+            dfNew = pandas.DataFrame({'x': new_dist.x, 'interpol': new_dist.y})
+            dfExport = pandas.concat([dfOld, dfNew], axis=1)
             dfExport.to_csv(path_or_buf='Interpol_Dens.csv', sep=';', header=True,
                             index=False)
-            dfOld = pd.DataFrame({'x': self.x_max, 'init': self.get_y_max()})
-            dfNew = pd.DataFrame({'x': new_dist.x_max, 'interpol': new_dist.get_y_max()})
-            dfExport = pd.concat([dfOld, dfNew], axis=1)
+            dfOld = pandas.DataFrame({'x': self.x_max, 'init': self.get_y_max()})
+            dfNew = pandas.DataFrame({'x': new_dist.x_max, 'interpol': new_dist.get_y_max()})
+            dfExport = pandas.concat([dfOld, dfNew], axis=1)
             dfExport.to_csv(path_or_buf='Interpol_Sum.csv', sep=';', header=True,
                             index=False)
         return new_dist
@@ -501,15 +500,15 @@ class Distribution:
             # calculate dx
             dxi = new_dist.get_dx_i()
             # calculate x^(s-r) * qr(x) * dx
-            xqdx = np.power(new_dist.change_x_type(1).x[1:], float(self.d_f[base] - self.d_f[new_dist.base]))
-            xqdx = np.append([0], xqdx)
+            xqdx = numpy.power(new_dist.change_x_type(1).x[1:], float(self.d_f[base] - self.d_f[new_dist.base]))
+            xqdx = numpy.append([0], xqdx)
             xqdx *= new_dist.get_population()
 
             # normalize by integral for x from 0 to inf
-            xqdx = xqdx / np.sum(xqdx)
+            xqdx = xqdx / numpy.sum(xqdx)
 
             new_dist.y = xqdx[1:] / dxi[1:]
-            new_dist.y = np.append([0], new_dist.y)
+            new_dist.y = numpy.append([0], new_dist.y)
             # update base
             new_dist.base = base
             return new_dist
@@ -540,11 +539,11 @@ class Distribution:
                                                                                  x_types[self.x_type],
                                                                                  DistributionNames[0],
                                                                                  self.base, x_types[x_type]))
-            x_max_new = np.zeros(len(self.x_max))
+            x_max_new = numpy.zeros(len(self.x_max))
             if self.x_type == 1:
                 if x_type == 3:
                     # get volume from size
-                    x_max_new = np.pi / 6.0 * np.power(self.x_max,
+                    x_max_new = numpy.pi / 6.0 * numpy.power(self.x_max,
                                                        float(self.d_f[x_type]) / float(self.d_f[self.x_type]))
                 else:
                     io_node.log_and_print(
@@ -552,7 +551,7 @@ class Distribution:
             elif self.x_type == 3:
                 if x_type == 1:
                     # get size from volume
-                    x_max_new = np.power(6.0 * self.x_max / np.pi,
+                    x_max_new = numpy.power(6.0 * self.x_max / numpy.pi,
                                          float(self.d_f[x_type]) / float(self.d_f[self.x_type]))
                 else:
                     io_node.log_and_print(
@@ -587,16 +586,16 @@ class Distribution:
         """
         if x_min > 0:
             f = interpol.interp1d(self.x_max, self.get_y_max())
-            x_range = np.append([x_min], self.x_max[self.x_max > x_min])
-            x_i = np.diff(x_range)
+            x_range = numpy.append([x_min], self.x_max[self.x_max > x_min])
+            x_i = numpy.diff(x_range)
             limits = f(x_range)
-            mass_frac = np.diff(limits)
-            return np.sum(np.power(x_i, k) * mass_frac)
+            mass_frac = numpy.diff(limits)
+            return numpy.sum(numpy.power(x_i, k) * mass_frac)
         else:
-            xkqdx = np.power(self.x, k) * self.get_population()
-            return np.sum(xkqdx)
+            xkqdx = numpy.power(self.x, k) * self.get_population()
+            return numpy.sum(xkqdx)
 
-    def get_DI(self, x_limit: float = np.inf):
+    def get_DI(self, x_limit: float = numpy.inf):
         r"""
         Calculate dispersion index as
 
@@ -622,7 +621,7 @@ class Distribution:
 
         return A_peak / x_50
 
-    def get_x_50(self, x_limit: float = np.inf):
+    def get_x_50(self, x_limit: float = numpy.inf):
         """
         Get median of distribution
 
@@ -687,7 +686,7 @@ class Distribution:
             matrix of all possible aggregate volumes
         """
         I_max = len(self.x)  # grid size
-        return np.reshape(self.x, (I_max, 1)) + np.reshape(self.x, (1, I_max))
+        return numpy.reshape(self.x, (I_max, 1)) + numpy.reshape(self.x, (1, I_max))
 
     def get_agg_A_ijk(self):
         """
@@ -703,11 +702,11 @@ class Distribution:
         x_max = self.x_max.copy()  # cell limits
         I_max = len(x)  # grid size
         volume_sum = self.get_agg_volumes()  # sum of representative volumes
-        agg_A_ijk = np.zeros((I_max, I_max, I_max))
+        agg_A_ijk = numpy.zeros((I_max, I_max, I_max))
         for i in range(I_max):
-            jk_matrix = np.where(np.logical_and(volume_sum >= x_max[i - 1], volume_sum < x_max[i]), 1, 0)
+            jk_matrix = numpy.where(numpy.logical_and(volume_sum >= x_max[i - 1], volume_sum < x_max[i]), 1, 0)
             # select only j >= k by taking lower diagonal
-            agg_A_ijk[i] = np.tril(jk_matrix)
+            agg_A_ijk[i] = numpy.tril(jk_matrix)
 
         return agg_A_ijk
 
@@ -813,12 +812,12 @@ class Distribution:
         else:
             io_node.log_and_print(f'Wrong plot mode! Expected: 0 or 1, received: {mode}\n'
                                   f'Only 0: density/population and 1: cumulative allowed!', kind='error')
-            x_plot = np.zeros(2)
-            y_plot = np.zeros(2)
+            x_plot = numpy.zeros(2)
+            y_plot = numpy.zeros(2)
 
         # param_set plot_kwargs
         plot_kwargs.setdefault('label',
-                               rf'$f_{new_dist.base}({x_types[new_dist.x_type]}, {np.round(new_dist.time, 2)} s)$')
+                               rf'$f_{new_dist.base}({x_types[new_dist.x_type]}, {numpy.round(new_dist.time, 2)} s)$')
         plot_kwargs.setdefault('x_log', True)
         plot_kwargs.setdefault('y_log', False)
         plot_kwargs.setdefault('x_label', x_types[new_dist.x_type]
@@ -862,7 +861,7 @@ class Distribution:
             if not path.endswith('/'):
                 path += '/'
             path += f'dist_q{self.base}({x_names[self.x_type]}, {self.time}).csv'
-        df = pd.DataFrame()
+        df = pandas.DataFrame()
         df[f'x'] = self.x
         df[f'y'] = self.y
         df[f'x_max'] = self.x_max
@@ -916,7 +915,6 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
 
     Parameters
     ----------
-
     path : str
         Path to file
     base : int, optional
@@ -952,14 +950,14 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
 
         if path.endswith('.csv'):  # check if file is a CSV
             try:
-                df = pd.read_csv(path, sep=';', header=0)
+                df = pandas.read_csv(path, sep=';', header=0)
             except FileNotFoundError:
-                df = pd.read_csv(path, sep=';', header=0)
+                df = pandas.read_csv(path, sep=';', header=0)
             df_dict = {time: df}
 
         elif path.endswith('.xlsx'):  # check if file is a XLSX
             # read excel
-            xls = pd.ExcelFile(path)
+            xls = pandas.ExcelFile(path)
             df_dict = {str(name) if string_key else float(name): xls.parse(name) for name in xls.sheet_names}
 
         for time, df_run in df_dict.items():
@@ -968,16 +966,18 @@ def import_psd(path=None, base: int = 0, x_type: int = 3, d_f: list | None = Non
                 x_max = df_run['x_max'].to_numpy()
             else:
                 io_node.log_and_print(f'Insufficient data to import {path}. Expected x_max grid data!', kind='error')
-                return None
+                return Distribution()
 
             if 'y_max' in df_run.columns:
-                y_max = df_run['y_max'].to_numpy()
+                y_max = df_run['y_max'].to_numpy()  # read as cumulative
             elif 'y_pop' in df_run.columns:
-                y_max = np.cumsum(df_run['y_pop'].to_numpy())
+                y_max = numpy.cumsum(df_run['y_pop'].to_numpy())    # read population distribution and calculate cumulative
+            elif 'y' in df_run.columns:
+                y_max = numpy.cumsum(numpy.multiply(df_run['y'].to_numpy(), get_dx_i(df_run['x_max'].to_numpy())))
             else:
                 io_node.log_and_print(f'Insufficient data to import {path}. Expected y_max or y_pop data!',
                                       kind='error')
-                return None
+                return Distribution()
 
             # create new distribution
             if d_f is None:
@@ -1053,10 +1053,10 @@ def mono(nodes: int = 30,
     Distribution
     """
     # param_set distribution to mono at x=peak
-    x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
+    x_max = alg.discretize_x(x_lim=numpy.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
     x_max = alg.set_x_0(x_max)
     if x_max[0] < peak_at <= x_max[-1]:
-        y_max = np.zeros(len(x_max))
+        y_max = numpy.zeros(len(x_max))
         y_max[(x_max < peak_at).sum():] = 1
         dist = Distribution(x_max=x_max, y_max=y_max, base=base, x_type=x_type)
         return dist
@@ -1095,9 +1095,9 @@ def dec_exponential(nodes=30,
     Distribution
     """
     # param_set distribution to mono at x=peak
-    x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
+    x_max = alg.discretize_x(x_lim=numpy.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
     x_max = alg.set_x_0(x_max)
-    n = lambda v: N_0 / v_0 * np.exp(-v / v_0)
+    n = lambda v: N_0 / v_0 * numpy.exp(-v / v_0)
     return Distribution(x_max=x_max, y=n(get_x_i(x_max)), base=base, x_type=x_type)
 
 
@@ -1132,9 +1132,9 @@ def inc_exponential(nodes=30,
     Distribution
     """
     # param_set distribution to mono at x=peak
-    x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
+    x_max = alg.discretize_x(x_lim=numpy.array(x_lim), nodes=nodes + 1, grid=rest_args.setdefault('grid', 'log'))
     x_max = alg.set_x_0(x_max)
-    n = lambda v: N_0 / v_0 * np.exp(v / v_0)
+    n = lambda v: N_0 / v_0 * numpy.exp(v / v_0)
     return Distribution(x_max=x_max, y=n(get_x_i(x_max)), base=base, x_type=x_type)
 
 
@@ -1142,7 +1142,7 @@ def gauss(nodes: int = 30,
           x_lim: list | None = None,
           N_0: float = 1,
           mu: float = 1,
-          sigma: float = np.sqrt(np.log(4 / 3)),
+          sigma: float = numpy.sqrt(numpy.log(4 / 3)),
           base: int = 0,
           x_type: int = 3,
           **rest_args) -> Distribution:
@@ -1162,7 +1162,7 @@ def gauss(nodes: int = 30,
         Mean of distribution
     sigma : float
         standard deviation of distribution
-        default: np.sqrt(np.log(4 / 3))
+        default: numpy.sqrt(numpy.log(4 / 3))
     base : int, optional
             Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
     x_type : int, optional
@@ -1176,10 +1176,10 @@ def gauss(nodes: int = 30,
     if x_lim is None:
         x_lim = [0, 2]
     # param_set distribution to gauss
-    x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, **rest_args)
+    x_max = alg.discretize_x(x_lim=numpy.array(x_lim), nodes=nodes + 1, **rest_args)
     x_max = alg.set_x_0(x_max)
-    n = lambda v: N_0 / (np.sqrt(2 * np.pi) * v * sigma) * np.exp(-np.power(np.log(v / mu), 2) / (2 * sigma ** 2))
-    return Distribution(x_max=x_max, y=np.append([0], n(get_x_i(x_max)[1:])), base=base, x_type=x_type)
+    n = lambda v: N_0 / (numpy.sqrt(2 * numpy.pi) * v * sigma) * numpy.exp(-numpy.power(numpy.log(v / mu), 2) / (2 * sigma ** 2))
+    return Distribution(x_max=x_max, y=numpy.append([0], n(get_x_i(x_max)[1:])), base=base, x_type=x_type)
 
 
 def log_normal(x_lim: list[float],
@@ -1187,7 +1187,7 @@ def log_normal(x_lim: list[float],
                grid: str = 'log',
                log_base: float = 10.,
                mu: float = 1,
-               sigma: float = np.sqrt(np.log(4 / 3)),
+               sigma: float = numpy.sqrt(numpy.log(4 / 3)),
                base: int = 0,
                x_type: int = 3,
                **dist_kwargs) -> Distribution:
@@ -1212,7 +1212,7 @@ def log_normal(x_lim: list[float],
         Mean of distribution
     sigma : float, optional
         standard deviation of distribution
-        default: np.sqrt(np.log(4 / 3))
+        default: numpy.sqrt(numpy.log(4 / 3))
     base : int, optional
             Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume
     x_type : int, optional
@@ -1225,7 +1225,7 @@ def log_normal(x_lim: list[float],
     Distribution
     """
     # get grid border points
-    x_max = alg.discretize_x(x_lim=np.array(x_lim), nodes=nodes + 1, grid=grid, grid_base=log_base)
+    x_max = alg.discretize_x(x_lim=numpy.array(x_lim), nodes=nodes + 1, grid=grid, grid_base=log_base)
     x_max = alg.set_x_0(x_max)
     return Distribution(x_max=x_max, y_max=lognorm.cdf(x_max, s=sigma, scale=mu), base=base, x_type=x_type,
                         **dist_kwargs)

@@ -37,6 +37,14 @@ src.my\_exceptions module
    :undoc-members:
    :show-inheritance:
 
+src.viscosity module
+----------------------------
+
+.. automodule:: src.viscosity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 src.viscosity\_models module
 ----------------------------
 

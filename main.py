@@ -58,4 +58,11 @@ if __name__ == "__main__":
     print('percentile of value x = 2.32: ', mixed_dist.get_percentile_of_x(2.32))
     print('value x_40: ', mixed_dist.get_x_of_percentile(.4))
 
+    # read a single distribution from csv
+    import_as_dict = distribution.import_psd(path='examples/psd_import.csv', base=3, x_type=1)
+    import_as_dist = distribution.import_psd(path='examples/psd_import.csv', base=3, x_type=1, in_dict=False)
+
+    # read multiple distributions from xlsx, fractal dimension of surface of 2.5 and mass fractal dimension of 2.2
+    import_from_xlsx = distribution.import_psd(path='examples/psd_import.xlsx', base=3, x_type=1, d_f=[0, 1, 2.5, 2.2])
+
     print('end of show case')
