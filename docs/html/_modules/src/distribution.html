@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>src.distribution &mdash; distribution-tools 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            distribution-tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">distributions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">distribution-tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">src.distribution</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for src.distribution</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">interpol</span>
+
+<span class="c1"># import custom packages</span>
+<span class="kn">from</span> <span class="nn">src</span> <span class="kn">import</span> <span class="n">io_node</span><span class="p">,</span> <span class="n">algorithms</span> <span class="k">as</span> <span class="n">alg</span>
+<span class="kn">from</span> <span class="nn">src</span> <span class="kn">import</span> <span class="n">my_exceptions</span> <span class="k">as</span> <span class="n">exc</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">lognorm</span>
+
+<span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># 0=density distribution, 1=cumulative distribution</span>
+<span class="n">x_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">]</span>  <span class="c1"># number, length, surface, volume</span>
+<span class="n">x_units</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$m^</span><span class="si">{2}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$m^</span><span class="si">{3}</span><span class="s1">$&#39;</span><span class="p">]</span>
+<span class="n">DistributionNames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">]</span>
+<span class="n">x_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_max&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_x_i">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_x_i">[docs]</a>
+<span class="k">def</span> <span class="nf">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates cell average grid values from given grid</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_max : numpy.ndarray</span>
+<span class="sd">        Array of grid borders</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xi : numpy.ndarray</span>
+<span class="sd">        Cell average of grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">x_max</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_dx_i">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_dx_i">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dx_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates cell size of given grid</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_max : numpy.ndarray</span>
+<span class="sd">        Array of grid borders</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dx : numpy.ndarray</span>
+<span class="sd">        Array with size of cells</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_y_i">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_y_i">[docs]</a>
+<span class="k">def</span> <span class="nf">get_y_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">y_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates cell density values from given cumulative y array</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_max : numpy.ndarray</span>
+<span class="sd">        Array of grid borders</span>
+<span class="sd">    y_max: numpy.ndarray</span>
+<span class="sd">        Array of cumulative distribution values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    y_i : numpy.ndarray</span>
+<span class="sd">        Array of density values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x_max</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_dy_i">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_dy_i">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dy_i</span><span class="p">(</span><span class="n">y_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates population of each cell in a cumulative y array</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_max : numpy.array</span>
+<span class="sd">        Cumulative y array</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dy : numpy.ndarray</span>
+<span class="sd">        Population array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_max</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y_max</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_x_max">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_x_max">[docs]</a>
+<span class="k">def</span> <span class="nf">get_x_max</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates grid from average x values assuming a regular grid. (not recommended! Better provide grid)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray</span>
+<span class="sd">        Average x values of grid cells</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    x_max : numpy.ndarray</span>
+<span class="sd">        Grid array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_max</span><span class="p">)):</span>
+        <span class="n">x_max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_max</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">x_max</span></div>
+
+
+
+<div class="viewcode-block" id="Distribution">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution">[docs]</a>
+<span class="k">class</span> <span class="nc">Distribution</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">y</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">y_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                 <span class="n">d_f</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                 <span class="n">norm_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a Distribution object given either x_max and y_max or x_max and y</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_max : numpy.ndarray | None</span>
+<span class="sd">            Grid of discrete distribution.</span>
+<span class="sd">        y : numpy.ndarray | None</span>
+<span class="sd">            Density of discrete distribution</span>
+<span class="sd">        y_max : numpy.ndarray | None</span>
+<span class="sd">            Cumulative values of discrete distribution</span>
+<span class="sd">        base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">        x_type : int, optional</span>
+<span class="sd">            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">        d_f : list[float], optional</span>
+<span class="sd">            List of fractal dimensions for length, surface and volume</span>
+<span class="sd">        time : float, optional</span>
+<span class="sd">            Time stamp of distribution. The default assumes initial state (time = 0.0)</span>
+<span class="sd">        norm_value : float, optional</span>
+<span class="sd">            Reference value for a normalized distribution quantity x</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Dump for other keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set grid</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="n">x_max</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">y_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># set distribution density if cumulative values are present</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">y_max</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_max</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">get_x_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">get_y_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># set distribution density</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">get_dx_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)))</span>
+            <span class="c1"># correct discretization error</span>
+            <span class="n">y_max</span> <span class="o">/=</span> <span class="n">y_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">get_x_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;Insufficient data for distribution! Expected x_max and y_max or y!&#39;</span><span class="p">,</span>
+                                  <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">WrongValue</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;base to be in </span><span class="si">{</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">received</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">x_type</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span> <span class="o">=</span> <span class="n">x_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_name</span> <span class="o">=</span> <span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">WrongValue</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;x_type to be between 0 and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">x_types</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">received</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">d_f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d_f</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">d_f</span> <span class="o">=</span> <span class="n">d_f</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">normValue</span> <span class="o">=</span> <span class="n">norm_value</span>
+        <span class="k">if</span> <span class="n">norm_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;[WARNING] Initial distribution with normalized values assumed!&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Distribution </span><span class="si">{</span><span class="n">DistributionNames</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;$_{&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}$(&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span> \
+            <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; with x_max: </span><span class="si">{</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="w"> </span><span class="nb">float</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">))</span><span class="si">}</span><span class="s1"> µm on </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s1"> nodes&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">IncompatibleDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">IncompatibleDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="n">newy</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">othery</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">newy</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">othery</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">newy</span><span class="p">,</span> <span class="n">othery</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">newy</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">newy</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">newy</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">IncompatibleDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">**</span> <span class="n">other</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">IncompatibleDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Distribution.mix">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.mix">[docs]</a>
+    <span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">,</span> <span class="n">mass_frac</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mixing distribution with other distributions according to mass fractions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        others : tuple(Distribution)</span>
+<span class="sd">            Distribution objects to be added</span>
+<span class="sd">        mass_frac : numpy.ndarray | list[float] | None</span>
+<span class="sd">            mass fractions of others in mix. Sum must be less than 1!</span>
+<span class="sd">            default : equal mass fractions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">mass_frac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># set equal mass fractions</span>
+            <span class="n">mass_frac</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mass_frac</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">mass_frac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mass_frac</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mass_frac</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">others</span><span class="p">):</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Wrong size of mass fractions. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">others</span><span class="p">)</span><span class="si">}</span><span class="s1"> but received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mass_frac</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">if</span> <span class="n">mass_frac</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Sum of mass fractions must be &lt; 1! Current sum = </span><span class="si">{</span><span class="n">mass_frac</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">new_pop</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mass_frac</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">/</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_moment</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+        <span class="n">other_dists</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">others</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">other_dists</span><span class="p">):</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">is_compatible</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">adapt_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">new_pop</span> <span class="o">+=</span> <span class="n">mass_frac</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">dist</span><span class="o">.</span><span class="n">get_moment</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">dist</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+
+        <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">get_y_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">new_pop</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.copy">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns deep copy of object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.set_x_max">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.set_x_max">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_x_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets new grid to distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_max : numpy.ndarray</span>
+<span class="sd">            Grid of distributed quantity</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">x_max</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_dict">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_dict">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary representation of the distribution object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dump_dict : dict</span>
+<span class="sd">            dictionary representation of the distribution object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dump_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;x_max&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">),</span>
+            <span class="s1">&#39;y_max&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()),</span>
+            <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span>
+            <span class="s1">&#39;x_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">,</span>
+            <span class="s1">&#39;d_f&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">,</span>
+            <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+            <span class="s1">&#39;normValue&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">normValue</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">dump_dict</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_max_volume">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_max_volume">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_max_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get volume of x_100</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x_95 : float</span>
+<span class="sd">            x_95 value of distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">y_max</span><span class="p">[</span><span class="n">y_max</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">])]</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_dx_i">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_dx_i">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_dx_i</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">get_dx_i</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_population">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_population">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get population of each cell</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        population : numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dx_i</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_y_max">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_y_max">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_y_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get cumulative cell values</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        message : bool, optional</span>
+<span class="sd">            Print message about operation? default = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        y_max : numpy.ndarray</span>
+<span class="sd">            Cumulative cell values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+            <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Calculating Q</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+
+        <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dy</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.adapt_grid">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.adapt_grid">[docs]</a>
+    <span class="k">def</span> <span class="nf">adapt_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adapts grid of another distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : Distribution</span>
+<span class="sd">            Reference Distribution object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_dist : Distribution</span>
+<span class="sd">            Distribution with referenced grid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_i_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_max_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_i_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discretize</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">other</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span>
+                                                                  <span class="n">x_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">)</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.discretize">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.discretize">[docs]</a>
+    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_max</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="n">nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span>
+                   <span class="n">grid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span>
+                   <span class="n">log_fit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="n">message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Discretize the distribution on a new grid</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_max : numpy.ndarray, optional</span>
+<span class="sd">            Left and right grid edges (min and max value for x). If None, keeps current x range</span>
+<span class="sd">        nodes : int, optional</span>
+<span class="sd">            number of cells, default = 60</span>
+<span class="sd">        grid : str, optional</span>
+<span class="sd">            Grid scale. &#39;log&#39; = logarithmic scale (default), &#39;linear&#39; = linear scale</span>
+<span class="sd">        log_fit : bool, optional</span>
+<span class="sd">            False: use actual values for linear interpolation (default), True: use log10 values for interpolation</span>
+<span class="sd">        message : bool, optional</span>
+<span class="sd">            Print message about operation? default = False</span>
+<span class="sd">        debug : bool, optional</span>
+<span class="sd">            Print results for debugging (default = False)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_dist : Distribution</span>
+<span class="sd">            New Distribution object with altered grid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+            <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;Discretizing distribution over </span><span class="si">{}</span><span class="s1"> nodes.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># keep number of nodes but create a new grid within current x limits</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.01</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lower limit for discretization can&#39;t be 0! Set to </span><span class="si">{</span><span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;warning&#39;</span><span class="p">)</span>
+
+            <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">limits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">limits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">limits</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+
+        <span class="c1"># interpolate values onto new grid</span>
+        <span class="k">if</span> <span class="n">log_fit</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">(),</span>
+                                  <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">(),</span>
+                                  <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">assume_sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_max</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_max</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">get_y_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span>
+        <span class="n">new_dist</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+        <span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">x_max</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+            <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;x = </span><span class="si">{</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">dfOld</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">})</span>
+            <span class="n">dfNew</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;interpol&#39;</span><span class="p">:</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span><span class="p">})</span>
+            <span class="n">dfExport</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfOld</span><span class="p">,</span> <span class="n">dfNew</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">dfExport</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_or_buf</span><span class="o">=</span><span class="s1">&#39;Interpol_Dens.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">dfOld</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()})</span>
+            <span class="n">dfNew</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="s1">&#39;interpol&#39;</span><span class="p">:</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()})</span>
+            <span class="n">dfExport</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">dfOld</span><span class="p">,</span> <span class="n">dfNew</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">dfExport</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_or_buf</span><span class="o">=</span><span class="s1">&#39;Interpol_Sum.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_dist</span></div>
+
+
+<div class="viewcode-block" id="Distribution.change_base_and_x_type">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.change_base_and_x_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">change_base_and_x_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change base and x type of distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">        x_type : int, optional</span>
+<span class="sd">            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">        message : bool, optional</span>
+<span class="sd">            Print message about operation? default = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_dist : Distribution</span>
+<span class="sd">            New Distribution object with altered base and x_type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_base</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="n">change_x_type</span><span class="p">(</span><span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.change_base">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.change_base">[docs]</a>
+    <span class="k">def</span> <span class="nf">change_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change base of distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">        message : bool, optional</span>
+<span class="sd">            Print message about operation? default = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_dist : Distribution</span>
+<span class="sd">            New Distribution object with altered base</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">base</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;no need to change base, ignoring command&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_dist</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;Transforming from </span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">) to </span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DistributionNames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span>
+                                                                                      <span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">],</span>
+                                                                                      <span class="n">DistributionNames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">base</span><span class="p">,</span>
+                                                                                      <span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]))</span>
+            <span class="c1"># calculate dx</span>
+            <span class="n">dxi</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_dx_i</span><span class="p">()</span>
+            <span class="c1"># calculate x^(s-r) * qr(x) * dx</span>
+            <span class="n">xqdx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">new_dist</span><span class="o">.</span><span class="n">change_x_type</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">base</span><span class="p">]))</span>
+            <span class="n">xqdx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">xqdx</span><span class="p">)</span>
+            <span class="n">xqdx</span> <span class="o">*=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+
+            <span class="c1"># normalize by integral for x from 0 to inf</span>
+            <span class="n">xqdx</span> <span class="o">=</span> <span class="n">xqdx</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xqdx</span><span class="p">)</span>
+
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">xqdx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">/</span> <span class="n">dxi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="c1"># update base</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base</span>
+            <span class="k">return</span> <span class="n">new_dist</span></div>
+
+
+<div class="viewcode-block" id="Distribution.change_x_type">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.change_x_type">[docs]</a>
+    <span class="k">def</span> <span class="nf">change_x_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Change x type of distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_type : int, optional</span>
+<span class="sd">            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">        message : bool, optional</span>
+<span class="sd">            Print message about operation? default = False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        new_dist : Distribution</span>
+<span class="sd">            New Distribution object with x_type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span> <span class="o">==</span> <span class="n">x_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;no need to change x_type, ignoring command&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="s1">&#39;Transforming </span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">) to </span><span class="si">{}{}</span><span class="s1">(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">DistributionNames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span>
+                                                                                 <span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">],</span>
+                                                                                 <span class="n">DistributionNames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">,</span> <span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]))</span>
+            <span class="n">x_max_new</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="c1"># get volume from size</span>
+                    <span class="n">x_max_new</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">6.0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span>
+                                                       <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="n">x_type</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Change from </span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1"> not implemented yet!&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># get size from volume</span>
+                    <span class="n">x_max_new</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">6.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+                                         <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="n">x_type</span><span class="p">])</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">d_f</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Change from </span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1"> not implemented yet!&#39;</span><span class="p">)</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">                ToDo: </span>
+<span class="sd">                implement length to surface change</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+
+            <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max_new</span><span class="p">)</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span> <span class="o">=</span> <span class="n">x_max_new</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">get_y_i</span><span class="p">(</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">())</span>
+            <span class="n">new_dist</span><span class="o">.</span><span class="n">x_type</span> <span class="o">=</span> <span class="n">x_type</span>
+            <span class="k">return</span> <span class="n">new_dist</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_moment">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_moment">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate kth moment of distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : int, optional</span>
+<span class="sd">            kth moment to be calculated. Default is 0th moment (integral of density distribution)</span>
+<span class="sd">        x_min : float, optional</span>
+<span class="sd">            Lower limit for moment calculation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        moment : float</span>
+<span class="sd">            kth moment from x_min to infinity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">x_min</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">())</span>
+            <span class="n">x_range</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x_min</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">&gt;</span> <span class="n">x_min</span><span class="p">])</span>
+            <span class="n">x_i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
+            <span class="n">limits</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
+            <span class="n">mass_frac</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">limits</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x_i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">mass_frac</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xkqdx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xkqdx</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_DI">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_DI">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_DI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate dispersion index as</span>
+
+<span class="sd">        .. math:: DI = \frac{\int_0^{x^*}q_3(x)}{x_{50,3}(x^*)}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_limit : float, optional</span>
+<span class="sd">            Upper limit for DI calculation. Default takes whole distribution</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        DI : float</span>
+<span class="sd">            Dispersion index</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get mass distribution over size plot</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">change_x_type</span><span class="p">(</span><span class="n">x_type</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">change_base</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+        <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">new_dist</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">(),</span> <span class="n">y</span><span class="o">=</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span>
+        <span class="n">A_peak</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_dist</span><span class="o">.</span><span class="n">get_population</span><span class="p">()[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span> <span class="o">&lt;=</span> <span class="n">x_limit</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">x_50</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">A_peak</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">A_peak</span> <span class="o">/</span> <span class="n">x_50</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_x_50">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_x_50">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_x_50</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_limit</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get median of distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_limit : float, optional</span>
+<span class="sd">            Upper limit for distributed quantity</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x_50 : float</span>
+<span class="sd">            Median of distribution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">(),</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span>
+        <span class="n">A_peak</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_population</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">&lt;=</span> <span class="n">x_limit</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">A_peak</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_x_of_percentile">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_x_of_percentile">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_x_of_percentile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percentile</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get value of nth percentile</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        percentile : float | Iterable</span>
+<span class="sd">            Desired percentiles to be calculated</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        x : numpy.ndarray</span>
+<span class="sd">            x values of requested percentiles</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">(),</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">percentile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_percentile_of_x">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_percentile_of_x">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_percentile_of_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get fraction of population &lt;= x</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : float</span>
+<span class="sd">            Value of distributed quantity</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        percentile : float</span>
+<span class="sd">            Fraction of population with &lt;= x</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interpol</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_agg_volumes">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_agg_volumes">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_agg_volumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a matrix of all possible aggregate volumes of particles in grid</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            matrix of all possible aggregate volumes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">I_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># grid size</span>
+        <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">I_max</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">I_max</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Distribution.get_agg_A_ijk">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.get_agg_A_ijk">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_agg_A_ijk</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all cell combination within limits of new particle cell</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A_ijk : numpy.ndarray</span>
+<span class="sd">            3D matrix with all possible combinations of cell values for every cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># discrete particle size</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># cell limits</span>
+        <span class="n">I_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># grid size</span>
+        <span class="n">volume_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_agg_volumes</span><span class="p">()</span>  <span class="c1"># sum of representative volumes</span>
+        <span class="n">agg_A_ijk</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">I_max</span><span class="p">,</span> <span class="n">I_max</span><span class="p">,</span> <span class="n">I_max</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">I_max</span><span class="p">):</span>
+            <span class="n">jk_matrix</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">volume_sum</span> <span class="o">&gt;=</span> <span class="n">x_max</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">volume_sum</span> <span class="o">&lt;</span> <span class="n">x_max</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># select only j &gt;= k by taking lower diagonal</span>
+            <span class="n">agg_A_ijk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">jk_matrix</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">agg_A_ijk</span></div>
+
+
+<div class="viewcode-block" id="Distribution.is_compatible">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.is_compatible">[docs]</a>
+    <span class="k">def</span> <span class="nf">is_compatible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if other is compatible with Distribution object. Grid, base and x_type are to be equal</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : Distribution</span>
+<span class="sd">            Other Distribution object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">base</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x_type</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_max</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">x_max</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Distribution.plot">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.plot">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+             <span class="n">population</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+             <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="o">**</span><span class="n">plot_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots distribution</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mode : int, optional</span>
+<span class="sd">            0 = density distribution (default), 1 = cumulative distribution</span>
+<span class="sd">        population : bool, optional</span>
+<span class="sd">            If mode = 0, then returns population (default = True) or density (False)</span>
+<span class="sd">        base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number, 1: length, 2: surface, 3: volume</span>
+<span class="sd">            default : current base</span>
+<span class="sd">        x_type : int, optional</span>
+<span class="sd">            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume</span>
+<span class="sd">            x_type : current base</span>
+<span class="sd">        plot_kwargs</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Figure, Axes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span>
+        <span class="k">if</span> <span class="n">x_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_on_ax</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="n">population</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1"> / -&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">population</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$f_i(&#39;</span> <span class="o">+</span> <span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_i)$ / -&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$f(&#39;</span> <span class="o">+</span> <span class="n">x_types</span><span class="p">[</span><span class="n">x_type</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;)$ / -&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="Distribution.plot_on_ax">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.plot_on_ax">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_on_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">population</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                   <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots distribution on given ax</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax : Axes</span>
+<span class="sd">            Pyplot.Ax object for the data plot</span>
+<span class="sd">        mode : int, optional</span>
+<span class="sd">            0 = density distribution (default), 1 = cumulative distribution</span>
+<span class="sd">        population : bool, optional</span>
+<span class="sd">            If mode = 0, then returns population (default = True) or density (False)</span>
+<span class="sd">        base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number, 1: length, 2: surface, 3: volume</span>
+<span class="sd">            default : object base attribute</span>
+<span class="sd">        x_type : int, optional</span>
+<span class="sd">            Distributed quantity. 0: number, 1: length, 2: surface, 3: volume</span>
+<span class="sd">            default : object base attribute</span>
+<span class="sd">        plot_kwargs</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span>
+        <span class="k">if</span> <span class="n">x_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_type</span>
+        <span class="c1"># modify distribution</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new_dist</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x_plot</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">population</span><span class="p">:</span>
+                <span class="n">y_plot</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_population</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_plot</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x_plot</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">x_max</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">y_plot</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Wrong plot mode! Expected: 0 or 1, received: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                  <span class="sa">f</span><span class="s1">&#39;Only 0: density/population and 1: cumulative allowed!&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+            <span class="n">x_plot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">y_plot</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># param_set plot_kwargs</span>
+        <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;label&#39;</span><span class="p">,</span>
+                               <span class="sa">rf</span><span class="s1">&#39;$f_</span><span class="si">{</span><span class="n">new_dist</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">numpy</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">new_dist</span><span class="o">.</span><span class="n">time</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1"> s)$&#39;</span><span class="p">)</span>
+        <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;x_log&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;y_log&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;x_label&#39;</span><span class="p">,</span> <span class="n">x_types</span><span class="p">[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span>
+                               <span class="o">+</span> <span class="n">x_names</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+                               <span class="o">+</span> <span class="s1">&#39; / &#39;</span>
+                               <span class="o">+</span> <span class="n">x_units</span><span class="p">[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_type</span><span class="p">])</span>
+        <span class="n">plot_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;y_label&#39;</span><span class="p">,</span> <span class="n">DistributionNames</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+                                          <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;$_{&#39;</span>
+                                          <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">&#39;</span>
+                                          <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}$(&#39;</span>
+                                          <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span>
+                                          <span class="o">+</span> <span class="s1">&#39; / &#39;</span>
+                                          <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">population</span> <span class="k">else</span> <span class="n">DistributionNames</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+                                                                                <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;$_{&#39;</span>
+                                                                                <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">&#39;</span>
+                                                                                <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}$(&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">x_types</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1">)&#39;</span>
+                                                                                <span class="o">+</span> <span class="s1">&#39; / &#39;</span>
+                                                                                <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;$\frac</span><span class="si">{1}</span><span class="s1">{&#39;</span>
+                                                                                <span class="o">+</span> <span class="n">x_units</span><span class="p">[</span><span class="n">new_dist</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span>
+                                                                                <span class="o">+</span> <span class="sa">r</span><span class="s1">&#39;}$&#39;</span><span class="p">)</span>
+        <span class="n">io_node</span><span class="o">.</span><span class="n">plot_on_ax</span><span class="p">(</span><span class="n">x_plot</span><span class="o">=</span><span class="n">x_plot</span><span class="p">,</span> <span class="n">y_plot</span><span class="o">=</span><span class="n">y_plot</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_kwargs</span><span class="p">[</span><span class="s1">&#39;x_log&#39;</span><span class="p">]:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plot_kwargs</span><span class="p">[</span><span class="s1">&#39;y_log&#39;</span><span class="p">]:</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distribution.to_csv">
+<a class="viewcode-back" href="../../src.html#src.distribution.Distribution.to_csv">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes distribution to csv file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            path to csv-file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">path</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
+            <span class="n">path</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;dist_q</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="n">x_names</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_type</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s1">).csv&#39;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;x_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_max</span>
+        <span class="n">df</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;y_max&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_y_max</span><span class="p">()</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_or_buf</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_distribution">
+<a class="viewcode-back" href="../../src.html#src.distribution.get_distribution">[docs]</a>
+<span class="k">def</span> <span class="nf">get_distribution</span><span class="p">(</span><span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;custom&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    returns an analytical distribution</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kind : str</span>
+<span class="sd">        &#39;mono&#39;, &#39;dec_exponential&#39;, &#39;inc_exponential&#39;, &#39;gauss&#39;, &#39;log-normal&#39; or &#39;custom&#39; (default)</span>
+<span class="sd">    kwargs :</span>
+<span class="sd">        keyword arguments to be passed to Distribution</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;mono&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mono</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;dec_exponential&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dec_exponential</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;inc_exponential&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">inc_exponential</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;gauss&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">gauss</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s1">&#39;log-normal&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">log_normal</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;x_max&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;y_i&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s1">&#39;y_max&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_keys</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">all_keys</span> <span class="o">+=</span> <span class="s1">&#39;, &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">exc</span><span class="o">.</span><span class="n">WrongValue</span><span class="p">(</span><span class="n">expected</span><span class="o">=</span><span class="s1">&#39;x_max and y_i or y_max&#39;</span><span class="p">,</span> <span class="n">received</span><span class="o">=</span><span class="n">all_keys</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="import_psd">
+<a class="viewcode-back" href="../../src.html#src.distribution.import_psd">[docs]</a>
+<span class="k">def</span> <span class="nf">import_psd</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">d_f</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">time</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">norm_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">dist_adapt_to</span><span class="p">:</span> <span class="n">Distribution</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">string_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">in_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+               <span class="n">number_based</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+               <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Imports data from a CSV or XLSX file and returns is as a Distribution object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Path to file</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    d_f : list[float], optional</span>
+<span class="sd">        List of fractal dimensions for length, surface and volume</span>
+<span class="sd">    time : float, optional</span>
+<span class="sd">        Time stamp of distribution. The default assumes initial state (time = 0.0)</span>
+<span class="sd">    norm_value : float, optional</span>
+<span class="sd">        Reference value for a normalized distribution quantity x</span>
+<span class="sd">    kwargs : dict</span>
+<span class="sd">        Dump for other keyword arguments</span>
+<span class="sd">    dist_adapt_to : Distribution</span>
+<span class="sd">        adapts Distributions grid to a given reference</span>
+<span class="sd">    in_dict : bool</span>
+<span class="sd">        True (default) returns all imported Distributions as a dictionaries with</span>
+<span class="sd">    string_key : bool</span>
+<span class="sd">        True (default) converts all dictionary keys to strings</span>
+<span class="sd">    number_based : bool</span>
+<span class="sd">        False (default) automatically converts distributions to number based (base = 0) volume (x_type = 3) distribution</span>
+<span class="sd">    rest_args : dict</span>
+<span class="sd">        catching all other kwargs</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dist_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">df_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>  <span class="c1"># check if file is a CSV</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">df_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">time</span><span class="p">:</span> <span class="n">df</span><span class="p">}</span>
+
+        <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.xlsx&#39;</span><span class="p">):</span>  <span class="c1"># check if file is a XLSX</span>
+            <span class="c1"># read excel</span>
+            <span class="n">xls</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">ExcelFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">df_dict</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">string_key</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">name</span><span class="p">):</span> <span class="n">xls</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">xls</span><span class="o">.</span><span class="n">sheet_names</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">df_run</span> <span class="ow">in</span> <span class="n">df_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># extract data</span>
+            <span class="k">if</span> <span class="s1">&#39;x_max&#39;</span> <span class="ow">in</span> <span class="n">df_run</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">x_max</span> <span class="o">=</span> <span class="n">df_run</span><span class="p">[</span><span class="s1">&#39;x_max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Insufficient data to import </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">. Expected x_max grid data!&#39;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Distribution</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="s1">&#39;y_max&#39;</span> <span class="ow">in</span> <span class="n">df_run</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">y_max</span> <span class="o">=</span> <span class="n">df_run</span><span class="p">[</span><span class="s1">&#39;y_max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>  <span class="c1"># read as cumulative</span>
+            <span class="k">elif</span> <span class="s1">&#39;y_pop&#39;</span> <span class="ow">in</span> <span class="n">df_run</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">y_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">df_run</span><span class="p">[</span><span class="s1">&#39;y_pop&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())</span>    <span class="c1"># read population distribution and calculate cumulative</span>
+            <span class="k">elif</span> <span class="s1">&#39;y&#39;</span> <span class="ow">in</span> <span class="n">df_run</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">y_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">df_run</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">get_dx_i</span><span class="p">(</span><span class="n">df_run</span><span class="p">[</span><span class="s1">&#39;x_max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">())))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Insufficient data to import </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">. Expected y_max or y_pop data!&#39;</span><span class="p">,</span>
+                                      <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Distribution</span><span class="p">()</span>
+
+            <span class="c1"># create new distribution</span>
+            <span class="k">if</span> <span class="n">d_f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">d_f</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>  <span class="c1"># default for fractal dimension</span>
+            <span class="n">new_dist</span> <span class="o">=</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">,</span>
+                                    <span class="n">norm_value</span><span class="o">=</span><span class="n">norm_value</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">d_f</span><span class="o">=</span><span class="n">d_f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dist_adapt_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_dist</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">adapt_grid</span><span class="p">(</span><span class="n">dist_adapt_to</span><span class="p">)</span>
+
+            <span class="c1"># convert to number based volume distribution</span>
+            <span class="k">if</span> <span class="n">number_based</span><span class="p">:</span>
+                <span class="n">new_dist</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">change_base_and_x_type</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="n">dist_dict</span><span class="p">[</span><span class="n">time</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_dist</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dist_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">df_dict</span><span class="p">):</span>
+                <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Only one of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df_dict</span><span class="p">)</span><span class="si">}</span><span class="s1"> Sheets imported.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                      <span class="sa">f</span><span class="s1">&#39;Sheet name: </span><span class="si">{</span><span class="n">time</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                      <span class="sa">f</span><span class="s1">&#39;Consider using in_dict=False (default) for full output.&#39;</span><span class="p">,</span>
+                                      <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;warning&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">dist_dict</span><span class="p">[</span><span class="n">time</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dist_dict</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;path_in can&#39;t be None&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;error&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="mix">
+<a class="viewcode-back" href="../../src.html#src.distribution.mix">[docs]</a>
+<span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="o">*</span><span class="n">dists</span><span class="p">,</span> <span class="n">mass_frac</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    mix distributions according to mass fractions</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dists : tuple[Distribution]</span>
+<span class="sd">        any number of Distribution objects</span>
+<span class="sd">    mass_frac : numpy.ndarray | None</span>
+<span class="sd">        mass fractions of distributions</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">        mixed Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dists</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="o">*</span><span class="n">dists</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">mass_frac</span><span class="o">=</span><span class="n">mass_frac</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span></div>
+
+
+
+<div class="viewcode-block" id="mono">
+<a class="viewcode-back" href="../../src.html#src.distribution.mono">[docs]</a>
+<span class="k">def</span> <span class="nf">mono</span><span class="p">(</span><span class="n">nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+         <span class="n">x_lim</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="n">peak_at</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+         <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+         <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+         <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns mono distribution</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nodes : int</span>
+<span class="sd">        Nober of grid nodes</span>
+<span class="sd">    x_lim : list[float]</span>
+<span class="sd">        Min and max for x</span>
+<span class="sd">    peak_at : float</span>
+<span class="sd">        x value of the distribution peak</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    rest_args</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># param_set distribution to mono at x=peak</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_lim</span><span class="p">),</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">rest_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">))</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">x_max</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">peak_at</span> <span class="o">&lt;=</span> <span class="n">x_max</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_max</span><span class="p">))</span>
+        <span class="n">y_max</span><span class="p">[(</span><span class="n">x_max</span> <span class="o">&lt;</span> <span class="n">peak_at</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">():]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="n">y_max</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dist</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">io_node</span><span class="o">.</span><span class="n">log_and_print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;peak outside of range! x_lim: </span><span class="si">{</span><span class="n">x_lim</span><span class="si">}</span><span class="s2">, peak_at: </span><span class="si">{</span><span class="n">peak_at</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="dec_exponential">
+<a class="viewcode-back" href="../../src.html#src.distribution.dec_exponential">[docs]</a>
+<span class="k">def</span> <span class="nf">dec_exponential</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                    <span class="n">x_lim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">N_0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">v_0</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns decreasing exponential distribution (right side of gauss)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nodes : int</span>
+<span class="sd">        Nober of grid nodes</span>
+<span class="sd">    x_lim : list[float]</span>
+<span class="sd">        Min and max for x</span>
+<span class="sd">    N_0 : float</span>
+<span class="sd">        intergral of distribution</span>
+<span class="sd">    v_0 : float</span>
+<span class="sd">        average x</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    rest_args</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># param_set distribution to mono at x=peak</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_lim</span><span class="p">),</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">rest_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">))</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">N_0</span> <span class="o">/</span> <span class="n">v_0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">v</span> <span class="o">/</span> <span class="n">v_0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">n</span><span class="p">(</span><span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)),</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="inc_exponential">
+<a class="viewcode-back" href="../../src.html#src.distribution.inc_exponential">[docs]</a>
+<span class="k">def</span> <span class="nf">inc_exponential</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                    <span class="n">x_lim</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">N_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">v_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns increasing exponential distribution (left side of gauss)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nodes : int</span>
+<span class="sd">        Nober of grid nodes</span>
+<span class="sd">    x_lim : list[float]</span>
+<span class="sd">        Min and max for x</span>
+<span class="sd">    N_0 : float</span>
+<span class="sd">        intergral of distribution</span>
+<span class="sd">    v_0 : float</span>
+<span class="sd">        average x</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    rest_args</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># param_set distribution to mono at x=peak</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_lim</span><span class="p">),</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">rest_args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">))</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">N_0</span> <span class="o">/</span> <span class="n">v_0</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">v_0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">n</span><span class="p">(</span><span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)),</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="gauss">
+<a class="viewcode-back" href="../../src.html#src.distribution.gauss">[docs]</a>
+<span class="k">def</span> <span class="nf">gauss</span><span class="p">(</span><span class="n">nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+          <span class="n">x_lim</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="n">N_0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)),</span>
+          <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+          <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+          <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns gauss normal distribution</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nodes : int</span>
+<span class="sd">        number of nodes, default = 30</span>
+<span class="sd">    x_lim : list | None</span>
+<span class="sd">        x range, default = [0, 2]</span>
+<span class="sd">    N_0 : float</span>
+<span class="sd">        total integral, default = 1</span>
+<span class="sd">    mu : float</span>
+<span class="sd">        default: 1</span>
+<span class="sd">        Mean of distribution</span>
+<span class="sd">    sigma : float</span>
+<span class="sd">        standard deviation of distribution</span>
+<span class="sd">        default: numpy.sqrt(numpy.log(4 / 3))</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    rest_args</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x_lim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x_lim</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="c1"># param_set distribution to gauss</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_lim</span><span class="p">),</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">rest_args</span><span class="p">)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">N_0</span> <span class="o">/</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">mu</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">n</span><span class="p">(</span><span class="n">get_x_i</span><span class="p">(</span><span class="n">x_max</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])),</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="log_normal">
+<a class="viewcode-back" href="../../src.html#src.distribution.log_normal">[docs]</a>
+<span class="k">def</span> <span class="nf">log_normal</span><span class="p">(</span><span class="n">x_lim</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+               <span class="n">nodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+               <span class="n">grid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span>
+               <span class="n">log_base</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">,</span>
+               <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+               <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)),</span>
+               <span class="n">base</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+               <span class="n">x_type</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+               <span class="o">**</span><span class="n">dist_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distribution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    lognormal distribution as Distribution Object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_lim: list[float] or None</span>
+<span class="sd">        x limits as list with at least two floats sorted in ascending order.</span>
+<span class="sd">        First and last item represent x_min and x_max respectively</span>
+<span class="sd">    nodes: int, optional</span>
+<span class="sd">        number of grid points (default = 30)</span>
+<span class="sd">    grid: str, optional</span>
+<span class="sd">        &#39;log&#39;: (default) logarithmic grid</span>
+<span class="sd">        &#39;linear&#39;: linear grid</span>
+<span class="sd">    log_base: float, optional</span>
+<span class="sd">        default: 10</span>
+<span class="sd">        Base of logarithmic grid.</span>
+<span class="sd">    mu : float, optional</span>
+<span class="sd">        default: 1</span>
+<span class="sd">        Mean of distribution</span>
+<span class="sd">    sigma : float, optional</span>
+<span class="sd">        standard deviation of distribution</span>
+<span class="sd">        default: numpy.sqrt(numpy.log(4 / 3))</span>
+<span class="sd">    base : int, optional</span>
+<span class="sd">            Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</span>
+<span class="sd">    x_type : int, optional</span>
+<span class="sd">        Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</span>
+<span class="sd">    dist_kwargs: dict</span>
+<span class="sd">        kwargs for Distribution object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get grid border points</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">discretize_x</span><span class="p">(</span><span class="n">x_lim</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_lim</span><span class="p">),</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">grid_base</span><span class="o">=</span><span class="n">log_base</span><span class="p">)</span>
+    <span class="n">x_max</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">set_x_0</span><span class="p">(</span><span class="n">x_max</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Distribution</span><span class="p">(</span><span class="n">x_max</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="n">lognorm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">mu</span><span class="p">),</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">x_type</span><span class="o">=</span><span class="n">x_type</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">dist_kwargs</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CodyDaddy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

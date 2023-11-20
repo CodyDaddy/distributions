@@ -16,6 +16,7 @@
         <script src="_static/documentation_options.js?v=8d563738"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,9 +48,45 @@
 <li class="toctree-l2"><a class="reference internal" href="mpl.html">mpl package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">src package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src-algorithms-module">src.algorithms module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src-distribution-module">src.distribution module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#src-io-node-module">src.io_node module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.algorithms">src.algorithms module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.algorithms.discretize_x"><code class="docutils literal notranslate"><span class="pre">discretize_x()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.algorithms.log_of_base"><code class="docutils literal notranslate"><span class="pre">log_of_base()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.algorithms.set_x_0"><code class="docutils literal notranslate"><span class="pre">set_x_0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.algorithms.split_df_by_bounds"><code class="docutils literal notranslate"><span class="pre">split_df_by_bounds()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.distribution">src.distribution module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.Distribution"><code class="docutils literal notranslate"><span class="pre">Distribution</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.dec_exponential"><code class="docutils literal notranslate"><span class="pre">dec_exponential()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.gauss"><code class="docutils literal notranslate"><span class="pre">gauss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_distribution"><code class="docutils literal notranslate"><span class="pre">get_distribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_dx_i"><code class="docutils literal notranslate"><span class="pre">get_dx_i()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_dy_i"><code class="docutils literal notranslate"><span class="pre">get_dy_i()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_x_i"><code class="docutils literal notranslate"><span class="pre">get_x_i()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_x_max"><code class="docutils literal notranslate"><span class="pre">get_x_max()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.get_y_i"><code class="docutils literal notranslate"><span class="pre">get_y_i()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.import_psd"><code class="docutils literal notranslate"><span class="pre">import_psd()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.inc_exponential"><code class="docutils literal notranslate"><span class="pre">inc_exponential()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.log_normal"><code class="docutils literal notranslate"><span class="pre">log_normal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.mix"><code class="docutils literal notranslate"><span class="pre">mix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.distribution.mono"><code class="docutils literal notranslate"><span class="pre">mono()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.io_node">src.io_node module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.add_col_and_defragment"><code class="docutils literal notranslate"><span class="pre">add_col_and_defragment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.digits_forced"><code class="docutils literal notranslate"><span class="pre">digits_forced()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.files_with_pattern"><code class="docutils literal notranslate"><span class="pre">files_with_pattern()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.folder_picker"><code class="docutils literal notranslate"><span class="pre">folder_picker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.get_time_stamp"><code class="docutils literal notranslate"><span class="pre">get_time_stamp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.log_and_print"><code class="docutils literal notranslate"><span class="pre">log_and_print()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.only_folders"><code class="docutils literal notranslate"><span class="pre">only_folders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.plot_df_fade_on_ax"><code class="docutils literal notranslate"><span class="pre">plot_df_fade_on_ax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.plot_on_ax"><code class="docutils literal notranslate"><span class="pre">plot_on_ax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.plot_progress_on_ax"><code class="docutils literal notranslate"><span class="pre">plot_progress_on_ax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.runtime_test"><code class="docutils literal notranslate"><span class="pre">runtime_test()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.io_node.send_telegram_message"><code class="docutils literal notranslate"><span class="pre">send_telegram_message()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-src.my_exceptions">src.my_exceptions module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#src.my_exceptions.IncompatibleDistributions"><code class="docutils literal notranslate"><span class="pre">IncompatibleDistributions</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.my_exceptions.IncompatibleGrid"><code class="docutils literal notranslate"><span class="pre">IncompatibleGrid</span></code></a></li>
@@ -58,7 +95,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#src.my_exceptions.WrongValue"><code class="docutils literal notranslate"><span class="pre">WrongValue</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#src-viscosity-module">src.viscosity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-src.viscosity">src.viscosity module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#src.viscosity.Base"><code class="docutils literal notranslate"><span class="pre">Base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#src.viscosity.Viscosity"><code class="docutils literal notranslate"><span class="pre">Viscosity</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-src.viscosity_models">src.viscosity_models module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#src.viscosity_models.get_eta_herschel_bulkley"><code class="docutils literal notranslate"><span class="pre">get_eta_herschel_bulkley()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#src.viscosity_models.get_eta_herschel_bulkley_log"><code class="docutils literal notranslate"><span class="pre">get_eta_herschel_bulkley_log()</span></code></a></li>
@@ -102,14 +143,1259 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="src-algorithms-module">
-<h2>src.algorithms module<a class="headerlink" href="#src-algorithms-module" title="Link to this heading"></a></h2>
+<section id="module-src.algorithms">
+<span id="src-algorithms-module"></span><h2>src.algorithms module<a class="headerlink" href="#module-src.algorithms" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.algorithms.discretize_x">
+<span class="sig-prename descclassname"><span class="pre">src.algorithms.</span></span><span class="sig-name descname"><span class="pre">discretize_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/src/algorithms.html#discretize_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.discretize_x" title="Link to this definition"></a></dt>
+<dd><p>discretize x on a defined grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_lim: numpy.ndarray</strong></dt><dd><p>limits of x sorted in ascending order. At least two values required</p>
+</dd>
+<dt><strong>nodes: int</strong></dt><dd><p>number of cells</p>
+</dd>
+<dt><strong>grid: str</strong></dt><dd><p>‘log’: logarithmic grid with x_{i+1} = x_i * a, default
+‘linear’: linear grid
+‘geom’: geometric grid with x_i = grid_base^i</p>
+</dd>
+<dt><strong>grid_base: float</strong></dt><dd><p>base of geometric grid</p>
+</dd>
+<dt><strong>debug: bool</strong></dt><dd><p>default: True</p>
+</dd>
+<dt><strong>rest_args</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.algorithms.log_of_base">
+<span class="sig-prename descclassname"><span class="pre">src.algorithms.</span></span><span class="sig-name descname"><span class="pre">log_of_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/src/algorithms.html#log_of_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.log_of_base" title="Link to this definition"></a></dt>
+<dd><p>calculate logarithm of an arbitrary base</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>array with initial values</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">float</span></dt><dd><p>logarithm base b as in x = b^log_b(x)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.algorithms.set_x_0">
+<span class="sig-prename descclassname"><span class="pre">src.algorithms.</span></span><span class="sig-name descname"><span class="pre">set_x_0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms.html#set_x_0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.set_x_0" title="Link to this definition"></a></dt>
+<dd><p>Sets first value in x array to 0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">numpy.array</span></dt><dd><p>x values of distribution</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">numpy.ndarray | None</span></dt><dd><p>y values of distribution. Zero assumed if None</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">numpy.ndarray, y: numpy.ndarray</span></dt><dd><p>new values for x and y</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.algorithms.split_df_by_bounds">
+<span class="sig-prename descclassname"><span class="pre">src.algorithms.</span></span><span class="sig-name descname"><span class="pre">split_df_by_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/algorithms.html#split_df_by_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.algorithms.split_df_by_bounds" title="Link to this definition"></a></dt>
+<dd><p>Splits DataFrame by given bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">list[float]</span></dt><dd><p>DataFrame with data to be split in rows according a reference column</p>
+</dd>
+<dt><strong>bounds</strong><span class="classifier">list[float]</span></dt><dd><p>upper limits for values in reference column</p>
+</dd>
+<dt><strong>x_name</strong><span class="classifier">str | None, optional</span></dt><dd><p>name of the reference column, with first column of DataFrame as default.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list[pandas.DataFrames]</dt><dd><p>list of DataFrames split by bounds along reference column</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="src-distribution-module">
-<h2>src.distribution module<a class="headerlink" href="#src-distribution-module" title="Link to this heading"></a></h2>
+<section id="module-src.distribution">
+<span id="src-distribution-module"></span><h2>src.distribution module<a class="headerlink" href="#module-src.distribution" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.distribution.Distribution">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">Distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.adapt_grid" title="src.distribution.Distribution.adapt_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">adapt_grid</span></code></a>(other)</p></td>
+<td><p>Adapts grid of another distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.change_base" title="src.distribution.Distribution.change_base"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_base</span></code></a>([base, message])</p></td>
+<td><p>Change base of distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.change_base_and_x_type" title="src.distribution.Distribution.change_base_and_x_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_base_and_x_type</span></code></a>([base, x_type, message])</p></td>
+<td><p>Change base and x type of distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.change_x_type" title="src.distribution.Distribution.change_x_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_x_type</span></code></a>(x_type[, message])</p></td>
+<td><p>Change x type of distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.copy" title="src.distribution.Distribution.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p>Returns deep copy of object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.discretize" title="src.distribution.Distribution.discretize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">discretize</span></code></a>([x_max, nodes, grid, log_fit, ...])</p></td>
+<td><p>Discretize the distribution on a new grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_DI" title="src.distribution.Distribution.get_DI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_DI</span></code></a>([x_limit])</p></td>
+<td><p>Calculate dispersion index as</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_agg_A_ijk" title="src.distribution.Distribution.get_agg_A_ijk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_agg_A_ijk</span></code></a>()</p></td>
+<td><p>Get all cell combination within limits of new particle cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_agg_volumes" title="src.distribution.Distribution.get_agg_volumes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_agg_volumes</span></code></a>()</p></td>
+<td><p>Returns a matrix of all possible aggregate volumes of particles in grid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_dict" title="src.distribution.Distribution.get_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dict</span></code></a>()</p></td>
+<td><p>Returns a dictionary representation of the distribution object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_max_volume" title="src.distribution.Distribution.get_max_volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_max_volume</span></code></a>()</p></td>
+<td><p>Get volume of x_100</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_moment" title="src.distribution.Distribution.get_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_moment</span></code></a>([k, x_min])</p></td>
+<td><p>Calculate kth moment of distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_percentile_of_x" title="src.distribution.Distribution.get_percentile_of_x"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_percentile_of_x</span></code></a>(x)</p></td>
+<td><p>Get fraction of population &lt;= x</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_population" title="src.distribution.Distribution.get_population"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_population</span></code></a>()</p></td>
+<td><p>Get population of each cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_x_50" title="src.distribution.Distribution.get_x_50"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_x_50</span></code></a>([x_limit])</p></td>
+<td><p>Get median of distribution</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_x_of_percentile" title="src.distribution.Distribution.get_x_of_percentile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_x_of_percentile</span></code></a>(percentile)</p></td>
+<td><p>Get value of nth percentile</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.get_y_max" title="src.distribution.Distribution.get_y_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_y_max</span></code></a>([message])</p></td>
+<td><p>Get cumulative cell values</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.is_compatible" title="src.distribution.Distribution.is_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_compatible</span></code></a>(other)</p></td>
+<td><p>Checks if other is compatible with Distribution object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.mix" title="src.distribution.Distribution.mix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mix</span></code></a>(*others[, mass_frac])</p></td>
+<td><p>Mixing distribution with other distributions according to mass fractions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.plot" title="src.distribution.Distribution.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([mode, population, x_type, base])</p></td>
+<td><p>Plots distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.plot_on_ax" title="src.distribution.Distribution.plot_on_ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_on_ax</span></code></a>(ax[, mode, population, x_type, base])</p></td>
+<td><p>Plots distribution on given ax</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.distribution.Distribution.set_x_max" title="src.distribution.Distribution.set_x_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_x_max</span></code></a>(x_max)</p></td>
+<td><p>Sets new grid to distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.distribution.Distribution.to_csv" title="src.distribution.Distribution.to_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_csv</span></code></a>(path)</p></td>
+<td><p>Writes distribution to csv file</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>get_dx_i</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.adapt_grid">
+<span class="sig-name descname"><span class="pre">adapt_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.adapt_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.adapt_grid" title="Link to this definition"></a></dt>
+<dd><p>Adapts grid of another distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>other</strong><span class="classifier">Distribution</span></dt><dd><p>Reference Distribution object</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>new_dist</strong><span class="classifier">Distribution</span></dt><dd><p>Distribution with referenced grid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.change_base">
+<span class="sig-name descname"><span class="pre">change_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.change_base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.change_base" title="Link to this definition"></a></dt>
+<dd><p>Change base of distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">bool, optional</span></dt><dd><p>Print message about operation? default = False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>new_dist</strong><span class="classifier">Distribution</span></dt><dd><p>New Distribution object with altered base</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.change_base_and_x_type">
+<span class="sig-name descname"><span class="pre">change_base_and_x_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.change_base_and_x_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.change_base_and_x_type" title="Link to this definition"></a></dt>
+<dd><p>Change base and x type of distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">bool, optional</span></dt><dd><p>Print message about operation? default = False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>new_dist</strong><span class="classifier">Distribution</span></dt><dd><p>New Distribution object with altered base and x_type</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.change_x_type">
+<span class="sig-name descname"><span class="pre">change_x_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.change_x_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.change_x_type" title="Link to this definition"></a></dt>
+<dd><p>Change x type of distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">bool, optional</span></dt><dd><p>Print message about operation? default = False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>new_dist</strong><span class="classifier">Distribution</span></dt><dd><p>New Distribution object with x_type</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.copy" title="Link to this definition"></a></dt>
+<dd><p>Returns deep copy of object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.discretize">
+<span class="sig-name descname"><span class="pre">discretize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_fit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.discretize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.discretize" title="Link to this definition"></a></dt>
+<dd><p>Discretize the distribution on a new grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray, optional</span></dt><dd><p>Left and right grid edges (min and max value for x). If None, keeps current x range</p>
+</dd>
+<dt><strong>nodes</strong><span class="classifier">int, optional</span></dt><dd><p>number of cells, default = 60</p>
+</dd>
+<dt><strong>grid</strong><span class="classifier">str, optional</span></dt><dd><p>Grid scale. ‘log’ = logarithmic scale (default), ‘linear’ = linear scale</p>
+</dd>
+<dt><strong>log_fit</strong><span class="classifier">bool, optional</span></dt><dd><p>False: use actual values for linear interpolation (default), True: use log10 values for interpolation</p>
+</dd>
+<dt><strong>message</strong><span class="classifier">bool, optional</span></dt><dd><p>Print message about operation? default = False</p>
+</dd>
+<dt><strong>debug</strong><span class="classifier">bool, optional</span></dt><dd><p>Print results for debugging (default = False)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>new_dist</strong><span class="classifier">Distribution</span></dt><dd><p>New Distribution object with altered grid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_DI">
+<span class="sig-name descname"><span class="pre">get_DI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_DI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_DI" title="Link to this definition"></a></dt>
+<dd><p>Calculate dispersion index as</p>
+<div class="math notranslate nohighlight">
+\[DI = \frac{\int_0^{x^*}q_3(x)}{x_{50,3}(x^*)}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_limit</strong><span class="classifier">float, optional</span></dt><dd><p>Upper limit for DI calculation. Default takes whole distribution</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>DI</strong><span class="classifier">float</span></dt><dd><p>Dispersion index</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_agg_A_ijk">
+<span class="sig-name descname"><span class="pre">get_agg_A_ijk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_agg_A_ijk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_agg_A_ijk" title="Link to this definition"></a></dt>
+<dd><p>Get all cell combination within limits of new particle cell</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A_ijk</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>3D matrix with all possible combinations of cell values for every cell</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_agg_volumes">
+<span class="sig-name descname"><span class="pre">get_agg_volumes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_agg_volumes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_agg_volumes" title="Link to this definition"></a></dt>
+<dd><p>Returns a matrix of all possible aggregate volumes of particles in grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ndarray</dt><dd><p>matrix of all possible aggregate volumes</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_dict">
+<span class="sig-name descname"><span class="pre">get_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_dict" title="Link to this definition"></a></dt>
+<dd><p>Returns a dictionary representation of the distribution object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dump_dict</strong><span class="classifier">dict</span></dt><dd><p>dictionary representation of the distribution object</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_dx_i">
+<span class="sig-name descname"><span class="pre">get_dx_i</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_dx_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_dx_i" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_max_volume">
+<span class="sig-name descname"><span class="pre">get_max_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_max_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_max_volume" title="Link to this definition"></a></dt>
+<dd><p>Get volume of x_100</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_95</strong><span class="classifier">float</span></dt><dd><p>x_95 value of distribution</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_moment">
+<span class="sig-name descname"><span class="pre">get_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_moment" title="Link to this definition"></a></dt>
+<dd><p>Calculate kth moment of distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>k</strong><span class="classifier">int, optional</span></dt><dd><p>kth moment to be calculated. Default is 0th moment (integral of density distribution)</p>
+</dd>
+<dt><strong>x_min</strong><span class="classifier">float, optional</span></dt><dd><p>Lower limit for moment calculation</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>moment</strong><span class="classifier">float</span></dt><dd><p>kth moment from x_min to infinity</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_percentile_of_x">
+<span class="sig-name descname"><span class="pre">get_percentile_of_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_percentile_of_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_percentile_of_x" title="Link to this definition"></a></dt>
+<dd><p>Get fraction of population &lt;= x</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">float</span></dt><dd><p>Value of distributed quantity</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>percentile</strong><span class="classifier">float</span></dt><dd><p>Fraction of population with &lt;= x</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_population">
+<span class="sig-name descname"><span class="pre">get_population</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_population"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_population" title="Link to this definition"></a></dt>
+<dd><p>Get population of each cell</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>population</strong><span class="classifier">numpy.ndarray</span></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_x_50">
+<span class="sig-name descname"><span class="pre">get_x_50</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_x_50"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_x_50" title="Link to this definition"></a></dt>
+<dd><p>Get median of distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_limit</strong><span class="classifier">float, optional</span></dt><dd><p>Upper limit for distributed quantity</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x_50</strong><span class="classifier">float</span></dt><dd><p>Median of distribution</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_x_of_percentile">
+<span class="sig-name descname"><span class="pre">get_x_of_percentile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_x_of_percentile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_x_of_percentile" title="Link to this definition"></a></dt>
+<dd><p>Get value of nth percentile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>percentile</strong><span class="classifier">float | Iterable</span></dt><dd><p>Desired percentiles to be calculated</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>x values of requested percentiles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.get_y_max">
+<span class="sig-name descname"><span class="pre">get_y_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.get_y_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.get_y_max" title="Link to this definition"></a></dt>
+<dd><p>Get cumulative cell values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>message</strong><span class="classifier">bool, optional</span></dt><dd><p>Print message about operation? default = False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Cumulative cell values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.is_compatible">
+<span class="sig-name descname"><span class="pre">is_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.is_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.is_compatible" title="Link to this definition"></a></dt>
+<dd><p>Checks if other is compatible with Distribution object. Grid, base and x_type are to be equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>other</strong><span class="classifier">Distribution</span></dt><dd><p>Other Distribution object</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>bool</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.mix">
+<span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.mix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.mix" title="Link to this definition"></a></dt>
+<dd><p>Mixing distribution with other distributions according to mass fractions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>others</strong><span class="classifier">tuple(Distribution)</span></dt><dd><p>Distribution objects to be added</p>
+</dd>
+<dt><strong>mass_frac</strong><span class="classifier">numpy.ndarray | list[float] | None</span></dt><dd><p>mass fractions of others in mix. Sum must be less than 1!
+default : equal mass fractions</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">population</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.plot" title="Link to this definition"></a></dt>
+<dd><p>Plots distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mode</strong><span class="classifier">int, optional</span></dt><dd><p>0 = density distribution (default), 1 = cumulative distribution</p>
+</dd>
+<dt><strong>population</strong><span class="classifier">bool, optional</span></dt><dd><p>If mode = 0, then returns population (default = True) or density (False)</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number, 1: length, 2: surface, 3: volume
+default : current base</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume
+x_type : current base</p>
+</dd>
+<dt><strong>plot_kwargs</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Figure, Axes</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.plot_on_ax">
+<span class="sig-name descname"><span class="pre">plot_on_ax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">population</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.plot_on_ax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.plot_on_ax" title="Link to this definition"></a></dt>
+<dd><p>Plots distribution on given ax</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">Axes</span></dt><dd><p>Pyplot.Ax object for the data plot</p>
+</dd>
+<dt><strong>mode</strong><span class="classifier">int, optional</span></dt><dd><p>0 = density distribution (default), 1 = cumulative distribution</p>
+</dd>
+<dt><strong>population</strong><span class="classifier">bool, optional</span></dt><dd><p>If mode = 0, then returns population (default = True) or density (False)</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number, 1: length, 2: surface, 3: volume
+default : object base attribute</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume
+default : object base attribute</p>
+</dd>
+<dt><strong>plot_kwargs</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.set_x_max">
+<span class="sig-name descname"><span class="pre">set_x_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.set_x_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.set_x_max" title="Link to this definition"></a></dt>
+<dd><p>Sets new grid to distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Grid of distributed quantity</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.distribution.Distribution.to_csv">
+<span class="sig-name descname"><span class="pre">to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#Distribution.to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.Distribution.to_csv" title="Link to this definition"></a></dt>
+<dd><p>Writes distribution to csv file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>path to csv-file</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.dec_exponential">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">dec_exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#dec_exponential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.dec_exponential" title="Link to this definition"></a></dt>
+<dd><p>Returns decreasing exponential distribution (right side of gauss)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nodes</strong><span class="classifier">int</span></dt><dd><p>Nober of grid nodes</p>
+</dd>
+<dt><strong>x_lim</strong><span class="classifier">list[float]</span></dt><dd><p>Min and max for x</p>
+</dd>
+<dt><strong>N_0</strong><span class="classifier">float</span></dt><dd><p>intergral of distribution</p>
+</dd>
+<dt><strong>v_0</strong><span class="classifier">float</span></dt><dd><p>average x</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>rest_args</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.gauss">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">gauss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5363600213026516</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.gauss" title="Link to this definition"></a></dt>
+<dd><p>Returns gauss normal distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nodes</strong><span class="classifier">int</span></dt><dd><p>number of nodes, default = 30</p>
+</dd>
+<dt><strong>x_lim</strong><span class="classifier">list | None</span></dt><dd><p>x range, default = [0, 2]</p>
+</dd>
+<dt><strong>N_0</strong><span class="classifier">float</span></dt><dd><p>total integral, default = 1</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">float</span></dt><dd><p>default: 1
+Mean of distribution</p>
+</dd>
+<dt><strong>sigma</strong><span class="classifier">float</span></dt><dd><p>standard deviation of distribution
+default: numpy.sqrt(numpy.log(4 / 3))</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>rest_args</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_distribution">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'custom'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#get_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_distribution" title="Link to this definition"></a></dt>
+<dd><p>returns an analytical distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kind</strong><span class="classifier">str</span></dt><dd><p>‘mono’, ‘dec_exponential’, ‘inc_exponential’, ‘gauss’, ‘log-normal’ or ‘custom’ (default)</p>
+</dd>
+<dt><strong>kwargs</strong></dt><dd><p>keyword arguments to be passed to Distribution</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_dx_i">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_dx_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/src/distribution.html#get_dx_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_dx_i" title="Link to this definition"></a></dt>
+<dd><p>Calculates cell size of given grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of grid borders</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dx</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array with size of cells</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_dy_i">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_dy_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/src/distribution.html#get_dy_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_dy_i" title="Link to this definition"></a></dt>
+<dd><p>Calculates population of each cell in a cumulative y array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>y_max</strong><span class="classifier">numpy.array</span></dt><dd><p>Cumulative y array</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dy</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Population array</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_x_i">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_x_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/src/distribution.html#get_x_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_x_i" title="Link to this definition"></a></dt>
+<dd><p>Calculates cell average grid values from given grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of grid borders</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>xi</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Cell average of grid</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_x_max">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_x_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/distribution.html#get_x_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_x_max" title="Link to this definition"></a></dt>
+<dd><p>Calculates grid from average x values assuming a regular grid. (not recommended! Better provide grid)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Average x values of grid cells</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Grid array</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.get_y_i">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">get_y_i</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/src/distribution.html#get_y_i"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.get_y_i" title="Link to this definition"></a></dt>
+<dd><p>Calculates cell density values from given cumulative y array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_max</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of grid borders</p>
+</dd>
+<dt><strong>y_max: numpy.ndarray</strong></dt><dd><p>Array of cumulative distribution values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>y_i</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Array of density values</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.import_psd">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">import_psd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d_f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_adapt_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_based</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#import_psd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.import_psd" title="Link to this definition"></a></dt>
+<dd><p>Imports data from a CSV or XLSX file and returns is as a Distribution object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path to file</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>d_f</strong><span class="classifier">list[float], optional</span></dt><dd><p>List of fractal dimensions for length, surface and volume</p>
+</dd>
+<dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time stamp of distribution. The default assumes initial state (time = 0.0)</p>
+</dd>
+<dt><strong>norm_value</strong><span class="classifier">float, optional</span></dt><dd><p>Reference value for a normalized distribution quantity x</p>
+</dd>
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>Dump for other keyword arguments</p>
+</dd>
+<dt><strong>dist_adapt_to</strong><span class="classifier">Distribution</span></dt><dd><p>adapts Distributions grid to a given reference</p>
+</dd>
+<dt><strong>in_dict</strong><span class="classifier">bool</span></dt><dd><p>True (default) returns all imported Distributions as a dictionaries with</p>
+</dd>
+<dt><strong>string_key</strong><span class="classifier">bool</span></dt><dd><p>True (default) converts all dictionary keys to strings</p>
+</dd>
+<dt><strong>number_based</strong><span class="classifier">bool</span></dt><dd><p>False (default) automatically converts distributions to number based (base = 0) volume (x_type = 3) distribution</p>
+</dd>
+<dt><strong>rest_args</strong><span class="classifier">dict</span></dt><dd><p>catching all other kwargs</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.inc_exponential">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">inc_exponential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#inc_exponential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.inc_exponential" title="Link to this definition"></a></dt>
+<dd><p>Returns increasing exponential distribution (left side of gauss)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nodes</strong><span class="classifier">int</span></dt><dd><p>Nober of grid nodes</p>
+</dd>
+<dt><strong>x_lim</strong><span class="classifier">list[float]</span></dt><dd><p>Min and max for x</p>
+</dd>
+<dt><strong>N_0</strong><span class="classifier">float</span></dt><dd><p>intergral of distribution</p>
+</dd>
+<dt><strong>v_0</strong><span class="classifier">float</span></dt><dd><p>average x</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>rest_args</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.log_normal">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">log_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'log'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5363600213026516</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">dist_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#log_normal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.log_normal" title="Link to this definition"></a></dt>
+<dd><p>lognormal distribution as Distribution Object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_lim: list[float] or None</strong></dt><dd><p>x limits as list with at least two floats sorted in ascending order.
+First and last item represent x_min and x_max respectively</p>
+</dd>
+<dt><strong>nodes: int, optional</strong></dt><dd><p>number of grid points (default = 30)</p>
+</dd>
+<dt><strong>grid: str, optional</strong></dt><dd><p>‘log’: (default) logarithmic grid
+‘linear’: linear grid</p>
+</dd>
+<dt><strong>log_base: float, optional</strong></dt><dd><p>default: 10
+Base of logarithmic grid.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">float, optional</span></dt><dd><p>default: 1
+Mean of distribution</p>
+</dd>
+<dt><strong>sigma</strong><span class="classifier">float, optional</span></dt><dd><p>standard deviation of distribution
+default: numpy.sqrt(numpy.log(4 / 3))</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>dist_kwargs: dict</strong></dt><dd><p>kwargs for Distribution object</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.mix">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">dists</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_frac</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#mix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.mix" title="Link to this definition"></a></dt>
+<dd><p>mix distributions according to mass fractions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dists</strong><span class="classifier">tuple[Distribution]</span></dt><dd><p>any number of Distribution objects</p>
+</dd>
+<dt><strong>mass_frac</strong><span class="classifier">numpy.ndarray | None</span></dt><dd><p>mass fractions of distributions</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd><p>mixed Distribution</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.distribution.mono">
+<span class="sig-prename descclassname"><span class="pre">src.distribution.</span></span><span class="sig-name descname"><span class="pre">mono</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">rest_args</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#src.distribution.Distribution" title="src.distribution.Distribution"><span class="pre">Distribution</span></a></span></span><a class="reference internal" href="_modules/src/distribution.html#mono"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.distribution.mono" title="Link to this definition"></a></dt>
+<dd><p>Returns mono distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nodes</strong><span class="classifier">int</span></dt><dd><p>Nober of grid nodes</p>
+</dd>
+<dt><strong>x_lim</strong><span class="classifier">list[float]</span></dt><dd><p>Min and max for x</p>
+</dd>
+<dt><strong>peak_at</strong><span class="classifier">float</span></dt><dd><p>x value of the distribution peak</p>
+</dd>
+<dt><strong>base</strong><span class="classifier">int, optional</span></dt><dd><p>Base of distribution. 0: number (default), 1: length, 2: surface, 3: volume</p>
+</dd>
+<dt><strong>x_type</strong><span class="classifier">int, optional</span></dt><dd><p>Distributed quantity. 0: number, 1: length, 2: surface, 3: volume (default)</p>
+</dd>
+<dt><strong>rest_args</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Distribution</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="src-io-node-module">
-<h2>src.io_node module<a class="headerlink" href="#src-io-node-module" title="Link to this heading"></a></h2>
+<section id="module-src.io_node">
+<span id="src-io-node-module"></span><h2>src.io_node module<a class="headerlink" href="#module-src.io_node" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.add_col_and_defragment">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">add_col_and_defragment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#add_col_and_defragment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.add_col_and_defragment" title="Link to this definition"></a></dt>
+<dd><p>adds column to DataFrame and defragments it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">DataFrame</span></dt><dd></dd>
+<dt><strong>col_name</strong><span class="classifier">str</span></dt><dd><p>New column name</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">ndarray</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>DataFrame</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.digits_forced">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">digits_forced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/src/io_node.html#digits_forced"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.digits_forced" title="Link to this definition"></a></dt>
+<dd><p>returns x as double digit string with ‘0x’ if x is single digit number</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">int</span></dt><dd><p>digit (month, day, hour or minute)</p>
+</dd>
+<dt><strong>n</strong><span class="classifier">int</span></dt><dd><p>number of digits desired</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x_string</strong><span class="classifier">str</span></dt><dd><p>string of x with leading zeros</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.files_with_pattern">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">files_with_pattern</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#files_with_pattern"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.files_with_pattern" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.folder_picker">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">folder_picker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#folder_picker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.folder_picker" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.get_time_stamp">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">get_time_stamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_date</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#get_time_stamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.get_time_stamp" title="Link to this definition"></a></dt>
+<dd><p>Returns time stamp as string as {year}{month}{day}-{hour}{minute}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>p_date: bool, optional</strong></dt><dd><p>use date in string (default=True)</p>
+</dd>
+<dt><strong>p_time: bool, optional</strong></dt><dd><p>use time in string (default=True)</p>
+</dd>
+<dt><strong>sep: bool, optional</strong></dt><dd><p>separate date and time with ‘-’ (default=True)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.log_and_print">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">log_and_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_terminal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'info'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#log_and_print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.log_and_print" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.only_folders">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">only_folders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#only_folders"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.only_folders" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.plot_df_fade_on_ax">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">plot_df_fade_on_ax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#009682'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#plot_df_fade_on_ax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.plot_df_fade_on_ax" title="Link to this definition"></a></dt>
+<dd><p>Takes a Dataframe and plots its data column-wise as a faded curve over data from column x</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">Axes</span></dt><dd><p>Pyplot Axes objects</p>
+</dd>
+<dt><strong>df</strong><span class="classifier">DataFrame</span></dt><dd><p>a DataFrame with data to be plotted</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">str</span></dt><dd><p>x column title</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">list</span></dt><dd><p>a list of y columns, if None then all columns except x are considered</p>
+</dd>
+<dt><strong>c</strong><span class="classifier">str | tuple</span></dt><dd><p>color of the plot. Either hex string or rpg/cmyk tuple</p>
+</dd>
+<dt><strong>y_lim</strong><span class="classifier">list | numpy.ndarray</span></dt><dd><p>y limits</p>
+</dd>
+<dt><strong>x_lim</strong><span class="classifier">list | numpy.ndarray</span></dt><dd><p>x limits</p>
+</dd>
+<dt><strong>x_log</strong><span class="classifier">bool</span></dt><dd><p>to plot on logarithmic x ax, default = True</p>
+</dd>
+<dt><strong>y_log</strong><span class="classifier">bool</span></dt><dd><p>to plot on logarithmic y ax, default = True</p>
+</dd>
+<dt><strong>ncol</strong><span class="classifier">int</span></dt><dd><p>number of columns in legend, default = 1</p>
+</dd>
+<dt><strong>legend</strong><span class="classifier">bool</span></dt><dd><p>to plot legend, default = True</p>
+</dd>
+<dt><strong>grid</strong><span class="classifier">bool | dict</span></dt><dd><p>to plot a grid or dict with grid kwargs, default = True or  {‘which’: major, ‘axis’: ‘both’}</p>
+</dd>
+<dt><strong>plot_kwargs</strong><span class="classifier">plot arguments</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.plot_on_ax">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">plot_on_ax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#000000'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linestyle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#noname'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#plot_on_ax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.plot_on_ax" title="Link to this definition"></a></dt>
+<dd><p>Plots data on given Ax (beautiful plots by Marvin&amp;Frank)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_plot</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>x data</p>
+</dd>
+<dt><strong>y_plot</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>y data</p>
+</dd>
+<dt><strong>ax</strong><span class="classifier">Axes</span></dt><dd><p>ax</p>
+</dd>
+<dt><strong>c</strong><span class="classifier">str | tuple</span></dt><dd><p>line color, default = kit.black,</p>
+</dd>
+<dt><strong>lw: float</strong></dt><dd><p>line width, default = 1.,</p>
+</dd>
+<dt><strong>linestyle: str</strong></dt><dd><p>line style, default = ‘-‘,</p>
+</dd>
+<dt><strong>marker: str | None</strong></dt><dd><p>marker style, default = ‘o’,</p>
+</dd>
+<dt><strong>mfc: str | tuple | None</strong></dt><dd><p>marker face color, default = None,</p>
+</dd>
+<dt><strong>mec: str | tuple | None</strong></dt><dd><p>marker edge color, default = None,</p>
+</dd>
+<dt><strong>ms: float</strong></dt><dd><p>marker size, default = 6,</p>
+</dd>
+<dt><strong>mew: float</strong></dt><dd><p>marker edge width, default = 1,</p>
+</dd>
+<dt><strong>alpha: float</strong></dt><dd><p>transparency, default = 0.9,</p>
+</dd>
+<dt><strong>label: str</strong></dt><dd><p>legend data label, default = ‘#noname’</p>
+</dd>
+<dt><strong>x_log: bool</strong></dt><dd><p>logarithmic x-axis, default = True</p>
+</dd>
+<dt><strong>y_log: bool</strong></dt><dd><p>logarithmic y-axis, default= False,</p>
+</dd>
+<dt><strong>grid: bool | dict</strong></dt><dd><p>plot grid, default= True or {‘which’: ‘major’, ‘axis’: ‘both’}</p>
+</dd>
+<dt><strong>x_label: str | None</strong></dt><dd><p>x-axis label, default= None,</p>
+</dd>
+<dt><strong>y_label: str | None</strong></dt><dd><p>y-axis label, default= None</p>
+</dd>
+<dt><strong>legend: bool</strong></dt><dd><p>plot legend, default = True,</p>
+</dd>
+<dt><strong>ncol: int</strong></dt><dd><p>number of columns in legend, default = 1</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.plot_progress_on_ax">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">plot_progress_on_ax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mark_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shadow</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">plot_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#plot_progress_on_ax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.plot_progress_on_ax" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong></dt><dd></dd>
+<dt><strong>df</strong></dt><dd></dd>
+<dt><strong>mark_init</strong></dt><dd></dd>
+<dt><strong>shadow</strong></dt><dd></dd>
+<dt><strong>x_lim</strong></dt><dd></dd>
+<dt><strong>y_lim</strong></dt><dd></dd>
+<dt><strong>x_log</strong></dt><dd></dd>
+<dt><strong>y_log</strong></dt><dd></dd>
+<dt><strong>grid</strong></dt><dd></dd>
+<dt><strong>legend</strong></dt><dd></dd>
+<dt><strong>ncol</strong></dt><dd></dd>
+<dt><strong>marker</strong></dt><dd></dd>
+<dt><strong>plot_kwargs</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.runtime_test">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">runtime_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#runtime_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.runtime_test" title="Link to this definition"></a></dt>
+<dd><p>runs a runtime test on a callable returns its output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>func</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"></dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="src.io_node.send_telegram_message">
+<span class="sig-prename descclassname"><span class="pre">src.io_node.</span></span><span class="sig-name descname"><span class="pre">send_telegram_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/io_node.html#send_telegram_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.io_node.send_telegram_message" title="Link to this definition"></a></dt>
+<dd><p>sends telegram message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>message: str</strong></dt><dd><p>message text</p>
+</dd>
+<dt><strong>token: str</strong></dt><dd><p>bot token</p>
+</dd>
+<dt><strong>chat_id: str</strong></dt><dd><p>chat id</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd></dd>
+<dt>response as json dict</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-src.my_exceptions">
 <span id="src-my-exceptions-module"></span><h2>src.my_exceptions module<a class="headerlink" href="#module-src.my_exceptions" title="Link to this heading"></a></h2>
@@ -144,40 +1430,254 @@
 </dd></dl>
 
 </section>
-<section id="src-viscosity-module">
-<h2>src.viscosity module<a class="headerlink" href="#src-viscosity-module" title="Link to this heading"></a></h2>
+<section id="module-src.viscosity">
+<span id="src-viscosity-module"></span><h2>src.viscosity module<a class="headerlink" href="#module-src.viscosity" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="src.viscosity.Base">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.viscosity.</span></span><span class="sig-name descname"><span class="pre">Base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'unnamed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'custom'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Base" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p class="rubric">Methods</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>copy</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Base.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Base.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Base.copy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">src.viscosity.</span></span><span class="sig-name descname"><span class="pre">Viscosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Newton'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.viscosity.Base" title="src.viscosity.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.viscosity.Viscosity.fit_parameters" title="src.viscosity.Viscosity.fit_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_parameters</span></code></a>(df[, gamma_max, log_fit])</p></td>
+<td><p>Gets a DataFrame and returns a viscosity object with parameters fitted to data and split in ranges according to gamma_max list (if given)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.viscosity.Viscosity.get_eta" title="src.viscosity.Viscosity.get_eta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_eta</span></code></a>(gamma)</p></td>
+<td><p>Calculates dynamic viscosity for given shear rate(s) depending on self.kind and self.params</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.viscosity.Viscosity.get_tau" title="src.viscosity.Viscosity.get_tau"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tau</span></code></a>(gamma)</p></td>
+<td><p>Returns shear stress for given shear rate(s) depending on dynamic viscosity model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#src.viscosity.Viscosity.get_tau_gamma" title="src.viscosity.Viscosity.get_tau_gamma"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tau_gamma</span></code></a>(gamma)</p></td>
+<td><p>Returns equivalent of mass specific power for given shear rate(s) depending on dynamic viscosity model</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#src.viscosity.Viscosity.plot_on_ax" title="src.viscosity.Viscosity.plot_on_ax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_on_ax</span></code></a>(ax, gamma[, y])</p></td>
+<td><p>Plots viscosity data on given ax</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>copy</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity.fit_parameters">
+<span class="sig-name descname"><span class="pre">fit_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity.fit_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity.fit_parameters" title="Link to this definition"></a></dt>
+<dd><p>Gets a DataFrame and returns a viscosity object with parameters fitted to data
+and split in ranges according to gamma_max list (if given)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>df</strong><span class="classifier">pandas.DataFrame</span></dt><dd><p>DataFrame with viscosity data</p>
+</dd>
+<dt><strong>gamma_max</strong><span class="classifier">None or list, optional</span></dt><dd><p>if list then the fits are split according the gamma_max ranges</p>
+</dd>
+<dt><strong>log_fit: Bool</strong></dt><dd><p>fits to log10 of y_values if True. linear values fit if False</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Viscosity</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity.get_eta">
+<span class="sig-name descname"><span class="pre">get_eta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity.get_eta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity.get_eta" title="Link to this definition"></a></dt>
+<dd><p>Calculates dynamic viscosity for given shear rate(s) depending on self.kind and self.params</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>eta</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>dynamic viscosity for given shear rate. self.kind holds model name.</p>
+<p>Model names :</p>
+<p>‘Newton’ : constant viscosity</p>
+<p>‘Herschel-Bulkley’ : Hershel-Bulkley model with</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\eta = \left\{\begin{array}{ll}\eta_0, &amp; \dot{\gamma} \leq \dot{\gamma}_0 \\ \eta_0 + k \dot{\gamma}^{n-1}, &amp; \, \dot{\gamma} &gt; \dot{\gamma}_0 \\ \end{array}\right.\end{split}\]</div>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity.get_tau">
+<span class="sig-name descname"><span class="pre">get_tau</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity.get_tau"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity.get_tau" title="Link to this definition"></a></dt>
+<dd><p>Returns shear stress for given shear rate(s) depending on dynamic viscosity model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity.get_tau_gamma">
+<span class="sig-name descname"><span class="pre">get_tau_gamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity.get_tau_gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity.get_tau_gamma" title="Link to this definition"></a></dt>
+<dd><p>Returns equivalent of mass specific power for given shear rate(s) depending on dynamic viscosity model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="src.viscosity.Viscosity.plot_on_ax">
+<span class="sig-name descname"><span class="pre">plot_on_ax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'eta'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity.html#Viscosity.plot_on_ax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity.Viscosity.plot_on_ax" title="Link to this definition"></a></dt>
+<dd><p>Plots viscosity data on given ax</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">Axes</span></dt><dd><p>Pyplot.Ax object for the data plot</p>
+</dd>
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">str</span></dt><dd><dl class="simple">
+<dt>name of quantity.</dt><dd><p>‘eta’ : dynamic viscosity in Pas (default)
+‘tau’ : shear stress in Pa
+‘tau_gamma’ : product of shear stress and shear rate in Pa/s</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>kwargs</strong></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-src.viscosity_models">
 <span id="src-viscosity-models-module"></span><h2>src.viscosity_models module<a class="headerlink" href="#module-src.viscosity_models" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="src.viscosity_models.get_eta_herschel_bulkley">
-<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_eta_herschel_bulkley</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_eta_herschel_bulkley"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_eta_herschel_bulkley" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_eta_herschel_bulkley</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_eta_herschel_bulkley"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_eta_herschel_bulkley" title="Link to this definition"></a></dt>
+<dd><p>Returns dynamic viscosity according to Herschel-Bulkley model</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>gamma</strong></dt><dd></dd>
-<dt><strong>tau_0</strong></dt><dd></dd>
-<dt><strong>k</strong></dt><dd></dd>
-<dt><strong>n</strong></dt><dd></dd>
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+<dt><strong>tau_0</strong><span class="classifier">float</span></dt><dd><p>yield shear stress</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">float</span></dt><dd><p>consistency k</p>
+</dd>
+<dt><strong>n</strong><span class="classifier">float</span></dt><dd><p>flow index</p>
+</dd>
 </dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"></dd>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.viscosity_models.get_eta_herschel_bulkley_log">
-<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_eta_herschel_bulkley_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_eta_herschel_bulkley_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_eta_herschel_bulkley_log" title="Link to this definition"></a></dt>
-<dd><p>only because curve_fit doesn’t pass args to callable :(
-Returns
-——-</p>
+<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_eta_herschel_bulkley_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_eta_herschel_bulkley_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_eta_herschel_bulkley_log" title="Link to this definition"></a></dt>
+<dd><p>Returns log10 of dynamic viscosity according to Herschel-Bulkley model
+only because curve_fit doesn’t pass args to callable :(</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>gamma</strong><span class="classifier">float | numpy.ndarray | list</span></dt><dd><p>Shear rate(s)</p>
+</dd>
+<dt><strong>tau_0</strong><span class="classifier">float</span></dt><dd><p>yield shear stress</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">float</span></dt><dd><p>consistency k</p>
+</dd>
+<dt><strong>n</strong><span class="classifier">float</span></dt><dd><p>flow index</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd></dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="src.viscosity_models.get_herschel_bulkley_fit">
-<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_herschel_bulkley_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_fit</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_herschel_bulkley_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_herschel_bulkley_fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">src.viscosity_models.</span></span><span class="sig-name descname"><span class="pre">get_herschel_bulkley_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_fit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/viscosity_models.html#get_herschel_bulkley_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.viscosity_models.get_herschel_bulkley_fit" title="Link to this definition"></a></dt>
+<dd><p>Fits parameters for Herschel-Bulkley model from viscosity measurement data</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>gamma</strong><span class="classifier">numpy.ndarray | list</span></dt><dd><p>shear rate data</p>
+</dd>
+<dt><strong>eta</strong><span class="classifier">numpy.ndarray | list</span></dt><dd><p>dynamic viscosity at given shear rates</p>
+</dd>
+<dt><strong>log_fit</strong><span class="classifier">bool, optional</span></dt><dd><p>False : calculates fit error from absolute values, default</p>
+<p>True : calculates fit error from log10 values</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary with parameters</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="module-src">

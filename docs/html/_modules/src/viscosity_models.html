@@ -69,51 +69,89 @@
            <div itemprop="articleBody">
              
   <h1>Source code for src.viscosity_models</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">curve_fit</span>
 
 
 <div class="viewcode-block" id="get_eta_herschel_bulkley">
 <a class="viewcode-back" href="../../src.html#src.viscosity_models.get_eta_herschel_bulkley">[docs]</a>
-<span class="k">def</span> <span class="nf">get_eta_herschel_bulkley</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_eta_herschel_bulkley</span><span class="p">(</span><span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    </span>
+<span class="sd">    Returns dynamic viscosity according to Herschel-Bulkley model</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    gamma</span>
-<span class="sd">    tau_0</span>
-<span class="sd">    k</span>
-<span class="sd">    n</span>
+<span class="sd">    gamma : float | numpy.ndarray | list</span>
+<span class="sd">        Shear rate(s)</span>
+<span class="sd">    tau_0 : float</span>
+<span class="sd">        yield shear stress </span>
+<span class="sd">    k : float</span>
+<span class="sd">        consistency k </span>
+<span class="sd">    n : float</span>
+<span class="sd">        flow index</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-
+<span class="sd">    numpy.ndarray</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">tau_0</span> <span class="o">/</span> <span class="n">gamma</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">tau_0</span> <span class="o">/</span> <span class="n">gamma</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="get_eta_herschel_bulkley_log">
 <a class="viewcode-back" href="../../src.html#src.viscosity_models.get_eta_herschel_bulkley_log">[docs]</a>
-<span class="k">def</span> <span class="nf">get_eta_herschel_bulkley_log</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_eta_herschel_bulkley_log</span><span class="p">(</span><span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span> <span class="n">tau_0</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns log10 of dynamic viscosity according to Herschel-Bulkley model</span>
 <span class="sd">    only because curve_fit doesn&#39;t pass args to callable :(</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gamma : float | numpy.ndarray | list</span>
+<span class="sd">        Shear rate(s)</span>
+<span class="sd">    tau_0 : float</span>
+<span class="sd">        yield shear stress</span>
+<span class="sd">    k : float</span>
+<span class="sd">        consistency k</span>
+<span class="sd">    n : float</span>
+<span class="sd">        flow index</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-
+<span class="sd">    numpy.ndarray</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">tau_0</span> <span class="o">/</span> <span class="n">gamma</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">get_eta_herschel_bulkley</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">tau_0</span><span class="o">=</span><span class="n">tau_0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="get_herschel_bulkley_fit">
 <a class="viewcode-back" href="../../src.html#src.viscosity_models.get_herschel_bulkley_fit">[docs]</a>
-<span class="k">def</span> <span class="nf">get_herschel_bulkley_fit</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">log_fit</span><span class="p">):</span>
-    <span class="n">gamma</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;shear rate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-    <span class="n">eta</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;dynamic viscosity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">get_herschel_bulkley_fit</span><span class="p">(</span><span class="n">gamma</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span> <span class="n">eta</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span> <span class="n">log_fit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fits parameters for Herschel-Bulkley model from viscosity measurement data</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gamma : numpy.ndarray | list</span>
+<span class="sd">        shear rate data</span>
+<span class="sd">    eta : numpy.ndarray | list</span>
+<span class="sd">        dynamic viscosity at given shear rates</span>
+<span class="sd">    log_fit : bool, optional</span>
+<span class="sd">        False : calculates fit error from absolute values, default</span>
+<span class="sd">        </span>
+<span class="sd">        True : calculates fit error from log10 values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Dictionary with parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">log_fit</span><span class="p">:</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
+        <span class="n">eta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">get_eta_herschel_bulkley_log</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">popt</span><span class="p">,</span> <span class="n">pcov</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="n">get_eta_herschel_bulkley</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>

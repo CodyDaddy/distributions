@@ -59,7 +59,7 @@ def get_herschel_bulkley_fit(gamma: numpy.ndarray | list, eta: numpy.ndarray | l
         dynamic viscosity at given shear rates
     log_fit : bool, optional
         False : calculates fit error from absolute values, default
-        
+
         True : calculates fit error from log10 values
 
     Returns
