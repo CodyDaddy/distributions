@@ -267,6 +267,13 @@ class Distribution:
         return new_dist.change_base_and_x_type(self.base, x_type=1)
 
     def copy(self):
+        """
+        Returns deep copy of object
+
+        Returns
+        -------
+        Distribution
+        """
         return copy.deepcopy(self)
 
     def set_x_max(self, x_max: numpy.ndarray):

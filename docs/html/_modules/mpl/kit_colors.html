@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mpl.kit_colors &mdash; distribution-tools 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=8d563738"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            distribution-tools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">distributions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">distribution-tools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mpl.kit_colors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mpl.kit_colors</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Python database for KIT - colors</span>
+<span class="sd">By Marvin Winkler &amp; Frank Rhein</span>
+<span class="sd">=====</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Define KIT colors</span>
+<span class="n">transparent</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="n">white</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">black</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span>
+<span class="n">gray90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">gray80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">gray75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="n">gray70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">gray60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">gray50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">gray40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">gray30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">gray25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+<span class="n">gray20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">gray15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">)</span>
+<span class="n">gray10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">gray5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">)</span>
+
+<span class="n">green</span> <span class="o">=</span> <span class="s1">&#39;#009682&#39;</span>
+<span class="n">green90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.6294</span><span class="p">,</span> <span class="mf">0.5588</span><span class="p">)</span>
+<span class="n">green80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.6706</span><span class="p">,</span> <span class="mf">0.6078</span><span class="p">)</span>
+<span class="n">green75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.6912</span><span class="p">,</span> <span class="mf">0.6324</span><span class="p">)</span>
+<span class="n">green70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7118</span><span class="p">,</span> <span class="mf">0.6569</span><span class="p">)</span>
+<span class="n">green60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.7529</span><span class="p">,</span> <span class="mf">0.7059</span><span class="p">)</span>
+<span class="n">green50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.7941</span><span class="p">,</span> <span class="mf">0.7549</span><span class="p">)</span>
+<span class="n">green40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8353</span><span class="p">,</span> <span class="mf">0.8039</span><span class="p">)</span>
+<span class="n">green30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8765</span><span class="p">,</span> <span class="mf">0.8529</span><span class="p">)</span>
+<span class="n">green25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.8971</span><span class="p">,</span> <span class="mf">0.8775</span><span class="p">)</span>
+<span class="n">green20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9176</span><span class="p">,</span> <span class="mf">0.902</span><span class="p">)</span>
+<span class="n">green15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.9382</span><span class="p">,</span> <span class="mf">0.9265</span><span class="p">)</span>
+<span class="n">green10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9588</span><span class="p">,</span> <span class="mf">0.951</span><span class="p">)</span>
+<span class="n">green5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.9794</span><span class="p">,</span> <span class="mf">0.9755</span><span class="p">)</span>
+
+<span class="n">blue</span> <span class="o">=</span> <span class="s1">&#39;#4664aa&#39;</span>
+<span class="n">blue90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3471</span><span class="p">,</span> <span class="mf">0.4529</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">blue80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4196</span><span class="p">,</span> <span class="mf">0.5137</span><span class="p">,</span> <span class="mf">0.7333</span><span class="p">)</span>
+<span class="n">blue75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4559</span><span class="p">,</span> <span class="mf">0.5441</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+<span class="n">blue70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4922</span><span class="p">,</span> <span class="mf">0.5745</span><span class="p">,</span> <span class="mf">0.7667</span><span class="p">)</span>
+<span class="n">blue60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5647</span><span class="p">,</span> <span class="mf">0.6353</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">blue50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6373</span><span class="p">,</span> <span class="mf">0.6961</span><span class="p">,</span> <span class="mf">0.8333</span><span class="p">)</span>
+<span class="n">blue40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7098</span><span class="p">,</span> <span class="mf">0.7569</span><span class="p">,</span> <span class="mf">0.8667</span><span class="p">)</span>
+<span class="n">blue30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7824</span><span class="p">,</span> <span class="mf">0.8176</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">blue25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8186</span><span class="p">,</span> <span class="mf">0.848</span><span class="p">,</span> <span class="mf">0.9167</span><span class="p">)</span>
+<span class="n">blue20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8549</span><span class="p">,</span> <span class="mf">0.8784</span><span class="p">,</span> <span class="mf">0.9333</span><span class="p">)</span>
+<span class="n">blue15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8912</span><span class="p">,</span> <span class="mf">0.9088</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">)</span>
+<span class="n">blue10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9275</span><span class="p">,</span> <span class="mf">0.9392</span><span class="p">,</span> <span class="mf">0.9667</span><span class="p">)</span>
+<span class="n">blue5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9637</span><span class="p">,</span> <span class="mf">0.9696</span><span class="p">,</span> <span class="mf">0.9833</span><span class="p">)</span>
+
+<span class="n">red</span> <span class="o">=</span> <span class="s1">&#39;#a22223&#39;</span>
+<span class="n">red90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6718</span><span class="p">,</span> <span class="mf">0.22</span><span class="p">,</span> <span class="mf">0.2235</span><span class="p">)</span>
+<span class="n">red80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7082</span><span class="p">,</span> <span class="mf">0.3067</span><span class="p">,</span> <span class="mf">0.3098</span><span class="p">)</span>
+<span class="n">red75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7265</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.3529</span><span class="p">)</span>
+<span class="n">red70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7447</span><span class="p">,</span> <span class="mf">0.3933</span><span class="p">,</span> <span class="mf">0.3961</span><span class="p">)</span>
+<span class="n">red60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7812</span><span class="p">,</span> <span class="mf">0.48</span><span class="p">,</span> <span class="mf">0.4824</span><span class="p">)</span>
+<span class="n">red50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8176</span><span class="p">,</span> <span class="mf">0.5667</span><span class="p">,</span> <span class="mf">0.5686</span><span class="p">)</span>
+<span class="n">red40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8541</span><span class="p">,</span> <span class="mf">0.6533</span><span class="p">,</span> <span class="mf">0.6549</span><span class="p">)</span>
+<span class="n">red30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8906</span><span class="p">,</span> <span class="mf">0.74</span><span class="p">,</span> <span class="mf">0.7412</span><span class="p">)</span>
+<span class="n">red25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9088</span><span class="p">,</span> <span class="mf">0.7833</span><span class="p">,</span> <span class="mf">0.7843</span><span class="p">)</span>
+<span class="n">red20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9271</span><span class="p">,</span> <span class="mf">0.8267</span><span class="p">,</span> <span class="mf">0.8275</span><span class="p">)</span>
+<span class="n">red15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9453</span><span class="p">,</span> <span class="mf">0.87</span><span class="p">,</span> <span class="mf">0.8706</span><span class="p">)</span>
+<span class="n">red10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9635</span><span class="p">,</span> <span class="mf">0.9133</span><span class="p">,</span> <span class="mf">0.9137</span><span class="p">)</span>
+<span class="n">red5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9818</span><span class="p">,</span> <span class="mf">0.9567</span><span class="p">,</span> <span class="mf">0.9569</span><span class="p">)</span>
+
+<span class="n">yellow</span> <span class="o">=</span> <span class="s1">&#39;#fce500&#39;</span>
+<span class="n">yellow90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9894</span><span class="p">,</span> <span class="mf">0.9082</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="n">yellow80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9906</span><span class="p">,</span> <span class="mf">0.9184</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">yellow75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9912</span><span class="p">,</span> <span class="mf">0.9235</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
+<span class="n">yellow70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9918</span><span class="p">,</span> <span class="mf">0.9286</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="n">yellow60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9929</span><span class="p">,</span> <span class="mf">0.9388</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+<span class="n">yellow50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9941</span><span class="p">,</span> <span class="mf">0.949</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">yellow40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9953</span><span class="p">,</span> <span class="mf">0.9592</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">yellow30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9965</span><span class="p">,</span> <span class="mf">0.9694</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span>
+<span class="n">yellow25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9971</span><span class="p">,</span> <span class="mf">0.9745</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">)</span>
+<span class="n">yellow20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9976</span><span class="p">,</span> <span class="mf">0.9796</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+<span class="n">yellow15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9982</span><span class="p">,</span> <span class="mf">0.9847</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">)</span>
+<span class="n">yellow10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9988</span><span class="p">,</span> <span class="mf">0.9898</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+<span class="n">yellow5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9994</span><span class="p">,</span> <span class="mf">0.9949</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">)</span>
+
+<span class="n">orange</span> <span class="o">=</span> <span class="s1">&#39;#df9b1b&#39;</span>
+<span class="n">orange90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8871</span><span class="p">,</span> <span class="mf">0.6471</span><span class="p">,</span> <span class="mf">0.1953</span><span class="p">)</span>
+<span class="n">orange80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8996</span><span class="p">,</span> <span class="mf">0.6863</span><span class="p">,</span> <span class="mf">0.2847</span><span class="p">)</span>
+<span class="n">orange75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9059</span><span class="p">,</span> <span class="mf">0.7059</span><span class="p">,</span> <span class="mf">0.3294</span><span class="p">)</span>
+<span class="n">orange70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9122</span><span class="p">,</span> <span class="mf">0.7255</span><span class="p">,</span> <span class="mf">0.3741</span><span class="p">)</span>
+<span class="n">orange60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9247</span><span class="p">,</span> <span class="mf">0.7647</span><span class="p">,</span> <span class="mf">0.4635</span><span class="p">)</span>
+<span class="n">orange50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9373</span><span class="p">,</span> <span class="mf">0.8039</span><span class="p">,</span> <span class="mf">0.5529</span><span class="p">)</span>
+<span class="n">orange40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9498</span><span class="p">,</span> <span class="mf">0.8431</span><span class="p">,</span> <span class="mf">0.6424</span><span class="p">)</span>
+<span class="n">orange30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9624</span><span class="p">,</span> <span class="mf">0.8824</span><span class="p">,</span> <span class="mf">0.7318</span><span class="p">)</span>
+<span class="n">orange25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9686</span><span class="p">,</span> <span class="mf">0.902</span><span class="p">,</span> <span class="mf">0.7765</span><span class="p">)</span>
+<span class="n">orange20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9749</span><span class="p">,</span> <span class="mf">0.9216</span><span class="p">,</span> <span class="mf">0.8212</span><span class="p">)</span>
+<span class="n">orange15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9812</span><span class="p">,</span> <span class="mf">0.9412</span><span class="p">,</span> <span class="mf">0.8659</span><span class="p">)</span>
+<span class="n">orange10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9875</span><span class="p">,</span> <span class="mf">0.9608</span><span class="p">,</span> <span class="mf">0.9106</span><span class="p">)</span>
+<span class="n">orange5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9937</span><span class="p">,</span> <span class="mf">0.9804</span><span class="p">,</span> <span class="mf">0.9553</span><span class="p">)</span>
+
+<span class="n">lightgreen</span> <span class="o">=</span> <span class="s1">&#39;#8cb63c&#39;</span>
+<span class="n">lightgreen90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5941</span><span class="p">,</span> <span class="mf">0.7424</span><span class="p">,</span> <span class="mf">0.3118</span><span class="p">)</span>
+<span class="n">lightgreen80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6392</span><span class="p">,</span> <span class="mf">0.771</span><span class="p">,</span> <span class="mf">0.3882</span><span class="p">)</span>
+<span class="n">lightgreen75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6618</span><span class="p">,</span> <span class="mf">0.7853</span><span class="p">,</span> <span class="mf">0.4265</span><span class="p">)</span>
+<span class="n">lightgreen70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6843</span><span class="p">,</span> <span class="mf">0.7996</span><span class="p">,</span> <span class="mf">0.4647</span><span class="p">)</span>
+<span class="n">lightgreen60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7294</span><span class="p">,</span> <span class="mf">0.8282</span><span class="p">,</span> <span class="mf">0.5412</span><span class="p">)</span>
+<span class="n">lightgreen50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7745</span><span class="p">,</span> <span class="mf">0.8569</span><span class="p">,</span> <span class="mf">0.6176</span><span class="p">)</span>
+<span class="n">lightgreen40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8196</span><span class="p">,</span> <span class="mf">0.8855</span><span class="p">,</span> <span class="mf">0.6941</span><span class="p">)</span>
+<span class="n">lightgreen30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8647</span><span class="p">,</span> <span class="mf">0.9141</span><span class="p">,</span> <span class="mf">0.7706</span><span class="p">)</span>
+<span class="n">lightgreen25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8873</span><span class="p">,</span> <span class="mf">0.9284</span><span class="p">,</span> <span class="mf">0.8088</span><span class="p">)</span>
+<span class="n">lightgreen20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9098</span><span class="p">,</span> <span class="mf">0.9427</span><span class="p">,</span> <span class="mf">0.8471</span><span class="p">)</span>
+<span class="n">lightgreen15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9324</span><span class="p">,</span> <span class="mf">0.9571</span><span class="p">,</span> <span class="mf">0.8853</span><span class="p">)</span>
+<span class="n">lightgreen10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9549</span><span class="p">,</span> <span class="mf">0.9714</span><span class="p">,</span> <span class="mf">0.9235</span><span class="p">)</span>
+<span class="n">lightgreen5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9775</span><span class="p">,</span> <span class="mf">0.9857</span><span class="p">,</span> <span class="mf">0.9618</span><span class="p">)</span>
+
+<span class="n">purple</span> <span class="o">=</span> <span class="s1">&#39;#a3107c&#39;</span>
+<span class="n">purple90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6753</span><span class="p">,</span> <span class="mf">0.1565</span><span class="p">,</span> <span class="mf">0.5376</span><span class="p">)</span>
+<span class="n">purple80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7114</span><span class="p">,</span> <span class="mf">0.2502</span><span class="p">,</span> <span class="mf">0.589</span><span class="p">)</span>
+<span class="n">purple75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7294</span><span class="p">,</span> <span class="mf">0.2971</span><span class="p">,</span> <span class="mf">0.6147</span><span class="p">)</span>
+<span class="n">purple70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7475</span><span class="p">,</span> <span class="mf">0.3439</span><span class="p">,</span> <span class="mf">0.6404</span><span class="p">)</span>
+<span class="n">purple60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7835</span><span class="p">,</span> <span class="mf">0.4376</span><span class="p">,</span> <span class="mf">0.6918</span><span class="p">)</span>
+<span class="n">purple50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8196</span><span class="p">,</span> <span class="mf">0.5314</span><span class="p">,</span> <span class="mf">0.7431</span><span class="p">)</span>
+<span class="n">purple40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8557</span><span class="p">,</span> <span class="mf">0.6251</span><span class="p">,</span> <span class="mf">0.7945</span><span class="p">)</span>
+<span class="n">purple30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8918</span><span class="p">,</span> <span class="mf">0.7188</span><span class="p">,</span> <span class="mf">0.8459</span><span class="p">)</span>
+<span class="n">purple25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9098</span><span class="p">,</span> <span class="mf">0.7657</span><span class="p">,</span> <span class="mf">0.8716</span><span class="p">)</span>
+<span class="n">purple20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9278</span><span class="p">,</span> <span class="mf">0.8125</span><span class="p">,</span> <span class="mf">0.8973</span><span class="p">)</span>
+<span class="n">purple15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9459</span><span class="p">,</span> <span class="mf">0.8594</span><span class="p">,</span> <span class="mf">0.9229</span><span class="p">)</span>
+<span class="n">purple10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9639</span><span class="p">,</span> <span class="mf">0.9063</span><span class="p">,</span> <span class="mf">0.9486</span><span class="p">)</span>
+<span class="n">purple5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.982</span><span class="p">,</span> <span class="mf">0.9531</span><span class="p">,</span> <span class="mf">0.9743</span><span class="p">)</span>
+
+<span class="n">brown</span> <span class="o">=</span> <span class="s1">&#39;#a7822e&#39;</span>
+<span class="n">brown90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6894</span><span class="p">,</span> <span class="mf">0.5588</span><span class="p">,</span> <span class="mf">0.2624</span><span class="p">)</span>
+<span class="n">brown80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7239</span><span class="p">,</span> <span class="mf">0.6078</span><span class="p">,</span> <span class="mf">0.3443</span><span class="p">)</span>
+<span class="n">brown75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7412</span><span class="p">,</span> <span class="mf">0.6324</span><span class="p">,</span> <span class="mf">0.3853</span><span class="p">)</span>
+<span class="n">brown70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7584</span><span class="p">,</span> <span class="mf">0.6569</span><span class="p">,</span> <span class="mf">0.4263</span><span class="p">)</span>
+<span class="n">brown60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7929</span><span class="p">,</span> <span class="mf">0.7059</span><span class="p">,</span> <span class="mf">0.5082</span><span class="p">)</span>
+<span class="n">brown50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8275</span><span class="p">,</span> <span class="mf">0.7549</span><span class="p">,</span> <span class="mf">0.5902</span><span class="p">)</span>
+<span class="n">brown40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.862</span><span class="p">,</span> <span class="mf">0.8039</span><span class="p">,</span> <span class="mf">0.6722</span><span class="p">)</span>
+<span class="n">brown30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8965</span><span class="p">,</span> <span class="mf">0.8529</span><span class="p">,</span> <span class="mf">0.7541</span><span class="p">)</span>
+<span class="n">brown25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9137</span><span class="p">,</span> <span class="mf">0.8775</span><span class="p">,</span> <span class="mf">0.7951</span><span class="p">)</span>
+<span class="n">brown20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.931</span><span class="p">,</span> <span class="mf">0.902</span><span class="p">,</span> <span class="mf">0.8361</span><span class="p">)</span>
+<span class="n">brown15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9482</span><span class="p">,</span> <span class="mf">0.9265</span><span class="p">,</span> <span class="mf">0.8771</span><span class="p">)</span>
+<span class="n">brown10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9655</span><span class="p">,</span> <span class="mf">0.951</span><span class="p">,</span> <span class="mf">0.918</span><span class="p">)</span>
+<span class="n">brown5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9827</span><span class="p">,</span> <span class="mf">0.9755</span><span class="p">,</span> <span class="mf">0.959</span><span class="p">)</span>
+
+<span class="n">cyan</span> <span class="o">=</span> <span class="s1">&#39;#23a1e0&#39;</span>
+<span class="n">cyan90</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.2235</span><span class="p">,</span> <span class="mf">0.6682</span><span class="p">,</span> <span class="mf">0.8906</span><span class="p">)</span>
+<span class="n">cyan80</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3098</span><span class="p">,</span> <span class="mf">0.7051</span><span class="p">,</span> <span class="mf">0.9027</span><span class="p">)</span>
+<span class="n">cyan75</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3529</span><span class="p">,</span> <span class="mf">0.7235</span><span class="p">,</span> <span class="mf">0.9088</span><span class="p">)</span>
+<span class="n">cyan70</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.3961</span><span class="p">,</span> <span class="mf">0.742</span><span class="p">,</span> <span class="mf">0.9149</span><span class="p">)</span>
+<span class="n">cyan60</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4824</span><span class="p">,</span> <span class="mf">0.7788</span><span class="p">,</span> <span class="mf">0.9271</span><span class="p">)</span>
+<span class="n">cyan50</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5686</span><span class="p">,</span> <span class="mf">0.8157</span><span class="p">,</span> <span class="mf">0.9392</span><span class="p">)</span>
+<span class="n">cyan40</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.6549</span><span class="p">,</span> <span class="mf">0.8525</span><span class="p">,</span> <span class="mf">0.9514</span><span class="p">)</span>
+<span class="n">cyan30</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7412</span><span class="p">,</span> <span class="mf">0.8894</span><span class="p">,</span> <span class="mf">0.9635</span><span class="p">)</span>
+<span class="n">cyan25</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.7843</span><span class="p">,</span> <span class="mf">0.9078</span><span class="p">,</span> <span class="mf">0.9696</span><span class="p">)</span>
+<span class="n">cyan20</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8275</span><span class="p">,</span> <span class="mf">0.9263</span><span class="p">,</span> <span class="mf">0.9757</span><span class="p">)</span>
+<span class="n">cyan15</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.8706</span><span class="p">,</span> <span class="mf">0.9447</span><span class="p">,</span> <span class="mf">0.9818</span><span class="p">)</span>
+<span class="n">cyan10</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9137</span><span class="p">,</span> <span class="mf">0.9631</span><span class="p">,</span> <span class="mf">0.9878</span><span class="p">)</span>
+<span class="n">cyan5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9569</span><span class="p">,</span> <span class="mf">0.9816</span><span class="p">,</span> <span class="mf">0.9939</span><span class="p">)</span>
+
+
+<span class="c1"># %% Define color cycles</span>
+<div class="viewcode-block" id="gray">
+<a class="viewcode-back" href="../../mpl.html#mpl.kit_colors.gray">[docs]</a>
+<span class="k">def</span> <span class="nf">gray</span><span class="p">(</span><span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an RGB faded tuple for any gray scale</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    intensity: float</span>
+<span class="sd">        gray intensity  with range from 0 (white) to 1 (full color)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">intensity</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">intensity</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">intensity</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="hex_to_faded">
+<a class="viewcode-back" href="../../mpl.html#mpl.kit_colors.hex_to_faded">[docs]</a>
+<span class="k">def</span> <span class="nf">hex_to_faded</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an RGB faded tuple to reduce color intensity</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hex_color: str</span>
+<span class="sd">        hex code of color</span>
+<span class="sd">    intensity: float</span>
+<span class="sd">        color intensity  with range from 0 (white) to 1 (full color)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert hex color to RGB tuple</span>
+    <span class="n">hex_color</span> <span class="o">=</span> <span class="n">hex_color</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+    <span class="n">rgb_color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">hex_color</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+
+    <span class="c1"># Calculate faded RGB tuple</span>
+    <span class="n">faded_rgb</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(((</span><span class="mi">1</span><span class="o">-</span><span class="n">intensity</span><span class="p">)</span> <span class="o">+</span> <span class="n">intensity</span> <span class="o">*</span> <span class="n">c</span><span class="o">/</span><span class="mi">255</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">rgb_color</span><span class="p">)</span>
+
+    <span class="c1"># Return faded RGB tuple as argument tuple</span>
+    <span class="k">return</span> <span class="n">faded_rgb</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,)</span></div>
+
+
+
+<span class="n">cycle_black_grey</span> <span class="o">=</span> <span class="p">[</span><span class="n">gray90</span><span class="p">,</span> <span class="n">gray80</span><span class="p">,</span> <span class="n">gray75</span><span class="p">,</span> <span class="n">gray70</span><span class="p">,</span> <span class="n">gray60</span><span class="p">,</span> <span class="n">gray50</span><span class="p">,</span> <span class="n">gray40</span><span class="p">,</span>
+                    <span class="n">gray30</span><span class="p">,</span> <span class="n">gray25</span><span class="p">,</span> <span class="n">gray20</span><span class="p">,</span> <span class="n">gray15</span><span class="p">,</span> <span class="n">gray10</span><span class="p">,</span> <span class="n">gray5</span><span class="p">,</span>
+                    <span class="n">gray90</span><span class="p">,</span> <span class="n">gray80</span><span class="p">,</span> <span class="n">gray75</span><span class="p">,</span> <span class="n">gray70</span><span class="p">,</span> <span class="n">gray60</span><span class="p">,</span> <span class="n">gray50</span><span class="p">,</span> <span class="n">gray40</span><span class="p">,</span>
+                    <span class="n">gray30</span><span class="p">,</span> <span class="n">gray25</span><span class="p">,</span> <span class="n">gray20</span><span class="p">,</span> <span class="n">gray15</span><span class="p">,</span> <span class="n">gray10</span><span class="p">,</span> <span class="n">gray5</span><span class="p">,</span>
+                    <span class="n">gray90</span><span class="p">,</span> <span class="n">gray80</span><span class="p">,</span> <span class="n">gray75</span><span class="p">,</span> <span class="n">gray70</span><span class="p">,</span> <span class="n">gray60</span><span class="p">,</span> <span class="n">gray50</span><span class="p">,</span> <span class="n">gray40</span><span class="p">,</span>
+                    <span class="n">gray30</span><span class="p">,</span> <span class="n">gray25</span><span class="p">,</span> <span class="n">gray20</span><span class="p">,</span> <span class="n">gray15</span><span class="p">,</span> <span class="n">gray10</span><span class="p">,</span> <span class="n">gray5</span><span class="p">]</span>
+
+<span class="n">cycle_color_main</span> <span class="o">=</span> <span class="p">[</span><span class="n">black</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">yellow</span><span class="p">,</span> <span class="n">orange</span><span class="p">,</span> <span class="n">lightgreen</span><span class="p">,</span> <span class="n">purple</span><span class="p">,</span> <span class="n">brown</span><span class="p">,</span> <span class="n">cyan</span><span class="p">,</span>
+                    <span class="n">gray80</span><span class="p">,</span> <span class="n">green80</span><span class="p">,</span> <span class="n">red80</span><span class="p">,</span> <span class="n">blue80</span><span class="p">,</span> <span class="n">yellow80</span><span class="p">,</span> <span class="n">orange80</span><span class="p">,</span> <span class="n">lightgreen80</span><span class="p">,</span> <span class="n">purple80</span><span class="p">,</span> <span class="n">brown80</span><span class="p">,</span> <span class="n">cyan80</span><span class="p">]</span>
+
+<span class="n">cycle_linestyle_main</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;solid&#39;</span><span class="p">,</span> <span class="s1">&#39;dotted&#39;</span><span class="p">,</span> <span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="s1">&#39;dashdot&#39;</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, CodyDaddy.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
